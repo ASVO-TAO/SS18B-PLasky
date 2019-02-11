@@ -4,25 +4,23 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 
 import logging
 
-from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
-from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import Http404
+from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.decorators import admin_or_system_admin_required
-
-from ...utility.constants import JOBS_PER_PAGE
-from ...utility.utils import get_readable_size
-from ...utility.job import BilbyJob
-from ...utility.display_names import (
+from bilbycommon.utility.job import BilbyJob
+from bilbycommon.utility.constants import JOBS_PER_PAGE
+from bilbycommon.utility.display_names import (
     DRAFT,
     PUBLIC,
     NONE,
 )
-from ...models import Job, JobStatus
-
+from bilbycommon.utility.utils import get_readable_size
+from ...models import BilbyBJob, JobStatus
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +33,7 @@ def public_jobs(request):
     :return: Rendered template.
     """
 
-    my_jobs = Job.objects.filter(Q(extra_status__in=[PUBLIC, ])) \
+    my_jobs = BilbyBJob.objects.filter(Q(extra_status__in=[PUBLIC, ])) \
         .order_by('-last_updated', '-job_pending_time')
 
     paginator = Paginator(my_jobs, JOBS_PER_PAGE)
@@ -69,7 +67,7 @@ def jobs(request):
     :return: Rendered template.
     """
 
-    my_jobs = Job.objects.filter(user=request.user) \
+    my_jobs = BilbyBJob.objects.filter(user=request.user) \
         .exclude(job_status__in=[JobStatus.DRAFT, JobStatus.DELETED]) \
         .order_by('-last_updated', '-job_pending_time')
 
@@ -104,7 +102,7 @@ def all_jobs(request):
     :return: Rendered template.
     """
 
-    my_jobs = Job.objects.all() \
+    my_jobs = BilbyBJob.objects.all() \
         .exclude(job_status__in=[JobStatus.DRAFT, JobStatus.DELETED]) \
         .order_by('-last_updated', '-job_pending_time')
 
@@ -139,7 +137,7 @@ def drafts(request):
     :return: Rendered template.
     """
 
-    my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DRAFT, ])) \
+    my_jobs = BilbyBJob.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DRAFT, ])) \
         .exclude(job_status__in=[JobStatus.DELETED, ]) \
         .order_by('-last_updated', '-creation_time')
 
@@ -175,7 +173,7 @@ def all_drafts(request):
     :return: Rendered template.
     """
 
-    my_jobs = Job.objects.filter(Q(job_status__in=[JobStatus.DRAFT, ])) \
+    my_jobs = BilbyBJob.objects.filter(Q(job_status__in=[JobStatus.DRAFT, ])) \
         .exclude(job_status__in=[JobStatus.DELETED, ]) \
         .order_by('-last_updated', '-creation_time')
 
@@ -211,7 +209,7 @@ def deleted_jobs(request):
     :return: Rendered template.
     """
 
-    my_jobs = Job.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DELETED, ])) \
+    my_jobs = BilbyBJob.objects.filter(Q(user=request.user), Q(job_status__in=[JobStatus.DELETED, ])) \
         .order_by('-last_updated', '-creation_time')
 
     paginator = Paginator(my_jobs, JOBS_PER_PAGE)
@@ -246,7 +244,7 @@ def all_deleted_jobs(request):
     :return: Rendered template.
     """
 
-    my_jobs = Job.objects.filter(Q(job_status__in=[JobStatus.DELETED, ])) \
+    my_jobs = BilbyBJob.objects.filter(Q(job_status__in=[JobStatus.DELETED, ])) \
         .order_by('-last_updated', '-creation_time')
 
     paginator = Paginator(my_jobs, JOBS_PER_PAGE)
@@ -286,7 +284,7 @@ def download_asset(request, job_id, download, file_path):
     :return: A HttpStreamingResponse object representing the file
     """
     # Get the job
-    job = get_object_or_404(Job, id=job_id)
+    job = get_object_or_404(BilbyBJob, id=job_id)
 
     # Check that this user has access to this job
     # it can download assets if there is a copy access
@@ -316,10 +314,10 @@ def view_job(request, job_id):
     job = None
 
     # checking:
-    # 1. Job ID and job exists
+    # 1. BilbyBJob ID and job exists
     if job_id:
         try:
-            job = Job.objects.get(id=job_id)
+            job = BilbyBJob.objects.get(id=job_id)
 
             # Check that this user has access to this job
             # it can view if there is a copy access
@@ -382,7 +380,7 @@ def view_job(request, job_id):
                         'job_data': job_data
                     }
                 )
-        except Job.DoesNotExist:
+        except BilbyBJob.DoesNotExist:
             pass
 
     if not job:
@@ -402,10 +400,10 @@ def copy_job(request, job_id):
     job = None
 
     # checking:
-    # 1. Job ID and job exists
+    # 1. BilbyBJob ID and job exists
     if job_id:
         try:
-            job = Job.objects.get(id=job_id)
+            job = BilbyBJob.objects.get(id=job_id)
 
             # Check whether user can copy the job
             bilby_job = job.bilby_job
@@ -421,7 +419,7 @@ def copy_job(request, job_id):
                     logger.info('Cannot copy job due to name length, job id: {}'.format(bilby_job.job.id))
                     # should return error about name length
                     pass
-        except Job.DoesNotExist:
+        except BilbyBJob.DoesNotExist:
             pass
 
     # this should be the last line before redirect
@@ -448,10 +446,10 @@ def edit_job(request, job_id):
     job = None
 
     # checking:
-    # 1. Job ID and job exists
+    # 1. BilbyBJob ID and job exists
     if job_id:
         try:
-            job = Job.objects.get(id=job_id)
+            job = BilbyBJob.objects.get(id=job_id)
 
             # Checks the edit permission for the user
             bilby_job = job.bilby_job
@@ -459,7 +457,7 @@ def edit_job(request, job_id):
 
             if 'edit' not in bilby_job.job_actions:
                 job = None
-        except Job.DoesNotExist:
+        except BilbyBJob.DoesNotExist:
             pass
 
     # this should be the last line before redirect
@@ -490,10 +488,10 @@ def cancel_job(request, job_id):
     to_page = 'jobs'
 
     # checking:
-    # 1. Job ID and job exists
+    # 1. BilbyBJob ID and job exists
     if job_id:
         try:
-            job = Job.objects.get(id=job_id)
+            job = BilbyBJob.objects.get(id=job_id)
 
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
@@ -506,7 +504,7 @@ def cancel_job(request, job_id):
                 job.cancel()
 
                 should_redirect = True
-        except Job.DoesNotExist:
+        except BilbyBJob.DoesNotExist:
             pass
 
     # this should be the last line before redirect
@@ -550,10 +548,10 @@ def delete_job(request, job_id):
     to_page = 'drafts'
 
     # checking:
-    # 1. Job ID and job exists
+    # 1. BilbyBJob ID and job exists
     if job_id:
         try:
-            job = Job.objects.get(id=job_id)
+            job = BilbyBJob.objects.get(id=job_id)
 
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
@@ -563,7 +561,7 @@ def delete_job(request, job_id):
                 should_redirect = False
             else:
 
-                message = 'Job <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
+                message = 'BilbyBJob <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
 
                 if job.status == DRAFT:
 
@@ -584,7 +582,7 @@ def delete_job(request, job_id):
                 messages.add_message(request, messages.SUCCESS, message, extra_tags='safe')
                 should_redirect = True
 
-        except Job.DoesNotExist:
+        except BilbyBJob.DoesNotExist:
             pass
 
     if not should_redirect:
@@ -635,10 +633,10 @@ def make_job_private(request, job_id):
     should_redirect = False
 
     # checking:
-    # 1. Job ID and job exists
+    # 1. BilbyBJob ID and job exists
     if job_id:
         try:
-            job = Job.objects.get(id=job_id)
+            job = BilbyBJob.objects.get(id=job_id)
 
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
@@ -649,9 +647,9 @@ def make_job_private(request, job_id):
                 job.save()
 
                 should_redirect = True
-                messages.success(request, 'Job has been changed to <strong>private!</strong>', extra_tags='safe')
+                messages.success(request, 'BilbyBJob has been changed to <strong>private!</strong>', extra_tags='safe')
 
-        except Job.DoesNotExist:
+        except BilbyBJob.DoesNotExist:
             pass
 
     # this should be the last line before redirect
@@ -682,10 +680,10 @@ def make_job_public(request, job_id):
     should_redirect = False
 
     # checking:
-    # 1. Job ID and job exists
+    # 1. BilbyBJob ID and job exists
     if job_id:
         try:
-            job = Job.objects.get(id=job_id)
+            job = BilbyBJob.objects.get(id=job_id)
 
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
@@ -696,9 +694,9 @@ def make_job_public(request, job_id):
                 job.save()
 
                 should_redirect = True
-                messages.success(request, 'Job has been changed to <strong>public!</strong>', extra_tags='safe')
+                messages.success(request, 'BilbyBJob has been changed to <strong>public!</strong>', extra_tags='safe')
 
-        except Job.DoesNotExist:
+        except BilbyBJob.DoesNotExist:
             pass
 
     # this should be the last line before redirect

@@ -5,10 +5,7 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 from collections import OrderedDict
 from django.db import IntegrityError
 
-from ..dynamic.form import DynamicForm
-from ..dynamic import field
-from ...models import SignalParameter, Signal, Prior
-from ...utility.display_names import (
+from bilbycommon.utility.display_names import (
     MASS1,
     MASS1_DISPLAY,
     MASS2,
@@ -28,6 +25,9 @@ from ...utility.display_names import (
     DEC,
     DEC_DISPLAY,
 )
+from ..dynamic import field
+from ..dynamic.form import DynamicForm
+from ...models import SignalParameter, Signal, Prior
 
 BBH_FIELDS_PROPERTIES = OrderedDict([
     (MASS1, {

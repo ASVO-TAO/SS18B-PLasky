@@ -4,14 +4,14 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 
 from collections import OrderedDict
 
-from ...utility.display_names import EMCEE
-from ..dynamic import field
-from ...models import SamplerParameter, Sampler
-from ..dynamic.form import DynamicForm
-from ...utility.display_names import (
+from bilbycommon.utility.display_names import EMCEE
+from bilbycommon.utility.display_names import (
     NUMBER_OF_STEPS,
     NUMBER_OF_STEPS_DISPLAY,
 )
+from ..dynamic import field
+from ..dynamic.form import DynamicForm
+from ...models import SamplerParameter, Sampler
 
 EMCEE_FIELDS_PROPERTIES = OrderedDict([
     (NUMBER_OF_STEPS, {

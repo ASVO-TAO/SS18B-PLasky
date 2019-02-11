@@ -3,10 +3,10 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
 import ast
+
 from django import template
 
-from ..utility.display_names import *
-
+from bilbycommon.utility.display_names import *
 
 register = template.Library()
 

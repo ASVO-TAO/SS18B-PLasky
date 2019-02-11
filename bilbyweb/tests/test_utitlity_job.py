@@ -6,10 +6,9 @@ from django.test import (
     TestCase,
 )
 
-from ..utility.job import BilbyJob
-
-from ..models import Job
+from bilbycommon.utility.job import BilbyJob
 from .utility import TestData, get_members
+from ..models import BilbyBJob
 
 
 class TestBilbyJob(TestCase):
@@ -19,7 +18,7 @@ class TestBilbyJob(TestCase):
         cls.members = get_members()
 
     def test_job_creation(self):
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             user=self.members[0],
             name='a job',
             description='a job description',
@@ -30,7 +29,7 @@ class TestBilbyJob(TestCase):
         self.assertEquals(b_job.job, job)
 
     def test_job_creation_invalid(self):
-        Job.objects.create(
+        BilbyBJob.objects.create(
             user=self.members[0],
             name='a job',
             description='a job description',

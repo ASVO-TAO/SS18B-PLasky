@@ -6,7 +6,7 @@ from django.test import (
     TestCase,
 )
 
-from ..utility.utils import get_readable_size
+from bilbycommon.utility.utils import get_readable_size
 
 
 class TestGetReadableSize(TestCase):

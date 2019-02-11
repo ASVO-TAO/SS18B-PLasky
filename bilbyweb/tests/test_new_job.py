@@ -11,7 +11,7 @@ from http import HTTPStatus
 
 from testfixtures.logcapture import LogCapture
 
-from ..models import Job
+from ..models import BilbyBJob
 from .utility import TestData, get_admins, get_members, PASSWORD_MEMBER
 
 
@@ -47,14 +47,14 @@ class TestNewJob(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
         # checkout the created job
-        created_job = Job.objects.get(name='a job', user=self.members[0])
+        created_job = BilbyBJob.objects.get(name='a job', user=self.members[0])
         self.assertEqual(created_job.description, 'a job description')
 
     def test_new_job_duplicate_name(self):
         job_name = 'a job'
         job_description = 'a job description'
 
-        Job.objects.create(
+        BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],

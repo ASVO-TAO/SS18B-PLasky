@@ -3,13 +3,10 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
 import ast
+
 from collections import OrderedDict
 
-from ...utility.display_names import OPEN_DATA
-from ..dynamic import field
-from ...models import DataParameter, Data
-from ..dynamic.form import DynamicForm
-from ...utility.display_names import (
+from bilbycommon.utility.display_names import (
     DETECTOR_CHOICE,
     DETECTOR_CHOICE_DISPLAY,
     SIGNAL_DURATION,
@@ -25,6 +22,10 @@ from ...utility.display_names import (
     VIRGO,
     VIRGO_DISPLAY,
 )
+from bilbycommon.utility.display_names import OPEN_DATA
+from ..dynamic import field
+from ..dynamic.form import DynamicForm
+from ...models import DataParameter, Data
 
 DETECTOR_CHOICES = [
     (HANFORD, HANFORD_DISPLAY),

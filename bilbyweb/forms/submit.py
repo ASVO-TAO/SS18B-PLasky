@@ -3,13 +3,12 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
 import logging
+
 from collections import OrderedDict
 
-from .dynamic.form import DynamicForm
+from bilbycommon.utility.job import BilbyJob
 from .dynamic import field
-
-from ..utility.job import BilbyJob
-
+from .dynamic.form import DynamicForm
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +41,7 @@ class SubmitJobForm(DynamicForm):
         self.full_clean()
         data = self.cleaned_data
 
-        # the json representation of the job is to be saved in the Job model
+        # the json representation of the job is to be saved in the BilbyBJob model
         self.job.json_representation = data.get('json_representation')
 
         # Submit the job to HPC

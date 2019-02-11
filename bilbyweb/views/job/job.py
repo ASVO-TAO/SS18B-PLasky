@@ -2,17 +2,14 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 
-from ...utility.display_names import SKIP
-from ...utility.utils import get_enabled_tabs
+from bilbycommon.utility.job import BilbyJob
 from ...models import (
-    Job,
+    BilbyBJob,
 )
-
-from ...utility.job import BilbyJob
-from ...utility.constants import (
+from bilbycommon.utility.constants import (
     START,
     DATA,
     DATA_OPEN,
@@ -31,6 +28,8 @@ from ...utility.constants import (
     TABS,
     TABS_INDEXES,
 )
+from bilbycommon.utility.display_names import SKIP
+from bilbycommon.utility.utils import get_enabled_tabs
 
 
 def get_to_be_active_tab(active_tab, previous=False):
@@ -92,7 +91,7 @@ def generate_forms(job=None, forms=None):
     if job:
         for model in MODELS:
             try:
-                # START Form is the Job instance, for other forms it is referenced
+                # START Form is the BilbyBJob instance, for other forms it is referenced
                 instance = job if model in [START, ] else MODELS[model].objects.get(job=job)
 
                 # do not override already generated forms.
@@ -196,8 +195,8 @@ def save_tab(request, active_tab):
 
     # check whether job exists
     try:
-        job = Job.objects.get(id=request.session['draft_job'].get('id', None))
-    except (KeyError, AttributeError, Job.DoesNotExist):
+        job = BilbyBJob.objects.get(id=request.session['draft_job'].get('id', None))
+    except (KeyError, AttributeError, BilbyBJob.DoesNotExist):
         job = None
 
     # generating the forms for the UI
@@ -231,7 +230,7 @@ def save_tab(request, active_tab):
         if job:
             job.refresh_from_db()
             # saving the job here again will call signal to update the last updated
-            # it is left to the signal because of potential change of Job model to
+            # it is left to the signal because of potential change of BilbyBJob model to
             # extend the HpcJob model.
             job.save()
 
@@ -288,8 +287,8 @@ def new_job(request):
 
         # Now, check whether a job exists or not
         try:
-            job = Job.objects.get(id=request.session['draft_job'].get('id', None))
-        except (KeyError, AttributeError, Job.DoesNotExist):
+            job = BilbyBJob.objects.get(id=request.session['draft_job'].get('id', None))
+        except (KeyError, AttributeError, BilbyBJob.DoesNotExist):
             job = None
 
         # generate forms

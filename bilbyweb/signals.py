@@ -6,22 +6,21 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
-from bilbyweb.models import Job
-from bilbyweb.utility.display_names import (
+from bilbycommon.utility.display_names import (
     COMPLETED,
     ERROR,
     WALL_TIME_EXCEEDED,
     OUT_OF_MEMORY,
 )
+from bilbyweb.models import BilbyBJob
+from bilbycommon.utility.email.email import email_notification_job_done
 
-from .utility.email.email import email_notification_job_done
 
-
-@receiver(pre_save, sender=Job, dispatch_uid='update_last_updated')
+@receiver(pre_save, sender=BilbyBJob, dispatch_uid='update_last_updated')
 def update_last_updated(instance, **kwargs):
     """
-    Signal to update the last updated for the Job
-    :param instance: instance of Job
+    Signal to update the last updated for the BilbyBJob
+    :param instance: instance of BilbyBJob
     :param kwargs: keyward arguments
     :return: Nothing
     """
@@ -29,18 +28,18 @@ def update_last_updated(instance, **kwargs):
         instance.last_updated = timezone.now()
 
 
-@receiver(pre_save, sender=Job, dispatch_uid='notify_job_owner')
+@receiver(pre_save, sender=BilbyBJob, dispatch_uid='notify_job_owner')
 def notify_job_owner(instance, **kwargs):
     """
-    Signal to send email notification on Job finished processing
-    :param instance: instance of Job
+    Signal to send email notification on BilbyBJob finished processing
+    :param instance: instance of BilbyBJob
     :param kwargs: keyward arguments
     :return: Nothing
     """
     if instance.pk:
 
         # finding the actual instance
-        old_instance = Job.objects.get(pk=instance.pk)
+        old_instance = BilbyBJob.objects.get(pk=instance.pk)
 
         # checking whether a status change happened
         # it should check on the actual number, not the status property as that will

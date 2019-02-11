@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'bilbyweb',
+    'bilbycommon',
+    'bilbygw',
     'django_hpc_job_controller'
 ]
 
@@ -192,4 +194,4 @@ ROOT_SUBDIRECTORY_PATH = ''
 
 SITE_URL = ''
 
-HPC_JOB_CLASS = 'bilbyweb.models.Job'
+HPC_JOB_CLASS = 'bilbyweb.models.BilbyBJob'

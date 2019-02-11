@@ -13,7 +13,7 @@ class Bilby(Slurm):
 
         :param settings: The settings from settings.py
         :param ui_id: The UI id of the job
-        :param job_id: The Slurm id of the Job
+        :param job_id: The Slurm id of the BilbyBJob
         """
         # Call the original constructor
         super().__init__(settings, ui_id, job_id)

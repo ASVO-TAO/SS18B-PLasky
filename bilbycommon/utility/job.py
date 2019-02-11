@@ -28,8 +28,8 @@ from ..utility.display_names import (
     PUBLIC,
 )
 
-from ..models import (
-    Job,
+from bilbyweb.models import (
+    BilbyBJob,
     Data,
     Signal,
     SignalParameter,
@@ -39,19 +39,19 @@ from ..models import (
     SamplerParameter,
 )
 
-from ..forms.signal.signal_parameter import BBH_FIELDS_PROPERTIES
-from ..forms.data.data_open import DATA_FIELDS_PROPERTIES as OPEN_DATA_FIELDS_PROPERTIES
-from ..forms.data.data_simulated import DATA_FIELDS_PROPERTIES as SIMULATED_DATA_FIELDS_PROPERTIES
-from ..forms.sampler.sampler_dynesty import DYNESTY_FIELDS_PROPERTIES
-from ..forms.sampler.sampler_nestle import NESTLE_FIELDS_PROPERTIES
-from ..forms.sampler.sampler_emcee import EMCEE_FIELDS_PROPERTIES
+from bilbyweb.forms.signal.signal_parameter import BBH_FIELDS_PROPERTIES
+from bilbyweb.forms.data.data_open import DATA_FIELDS_PROPERTIES as OPEN_DATA_FIELDS_PROPERTIES
+from bilbyweb.forms.data.data_simulated import DATA_FIELDS_PROPERTIES as SIMULATED_DATA_FIELDS_PROPERTIES
+from bilbyweb.forms.sampler.sampler_dynesty import DYNESTY_FIELDS_PROPERTIES
+from bilbyweb.forms.sampler.sampler_nestle import NESTLE_FIELDS_PROPERTIES
+from bilbyweb.forms.sampler.sampler_emcee import EMCEE_FIELDS_PROPERTIES
 
 
 def clone_job_data(from_job, to_job):
     """
     Copy job data across two jobs
-    :param from_job: instance of Job that will be used as a source
-    :param to_job: instance of Job that will be used as a target
+    :param from_job: instance of BilbyBJob that will be used as a source
+    :param to_job: instance of BilbyBJob that will be used as a target
     :return: Nothing
     """
     # cloning data and data parameters
@@ -130,12 +130,12 @@ def clone_job_data(from_job, to_job):
 
 class BilbyJob(object):
     """
-    Class representing a Bilby Job. The bilby job parameters are scattered in different models in the database.
+    Class representing a Bilby BilbyBJob. The bilby job parameters are scattered in different models in the database.
     This class used to collects the correct job parameters in one place. It also defines the json representation
     of the job.
     """
 
-    # variable to hold the Job model instance
+    # variable to hold the BilbyBJob model instance
     job = None
 
     # variable to hold the Data model instance
@@ -164,8 +164,8 @@ class BilbyJob(object):
 
     def clone_as_draft(self, user):
         """
-        Clones the bilby job for the user as a Draft Job
-        :param user: the owner of the new Draft Job
+        Clones the bilby job for the user as a Draft BilbyBJob
+        :param user: the owner of the new Draft BilbyBJob
         :return: Nothing
         """
 
@@ -174,7 +174,7 @@ class BilbyJob(object):
 
         # try to generate a unique name for the job owner
         name = self.job.name
-        while Job.objects.filter(user=user, name=name).exists():
+        while BilbyBJob.objects.filter(user=user, name=name).exists():
             name = (self.job.name + '_' + uuid.uuid4().hex)[:255]
 
             # This will be true if the job has 255 Characters in it,
@@ -185,7 +185,7 @@ class BilbyJob(object):
                 return None
 
         # Once the name is set, creating the draft job with new name and owner and same description
-        cloned = Job.objects.create(
+        cloned = BilbyBJob.objects.create(
             name=name,
             user=user,
             description=self.job.description,
@@ -198,14 +198,14 @@ class BilbyJob(object):
 
     def list_actions(self, user):
         """
-        List the actions a user can perform on this Job
+        List the actions a user can perform on this BilbyBJob
         :param user: User for whom the actions will be generated
         :return: Nothing
         """
 
         self.job_actions = []
 
-        # Job Owners and Admins get most actions
+        # BilbyBJob Owners and Admins get most actions
         if self.job.user == user or user.is_admin():
 
             # any job can be copied
@@ -241,7 +241,7 @@ class BilbyJob(object):
 
     def __init__(self, job_id, light=False):
         """
-        Initialises the Bilby Job
+        Initialises the Bilby BilbyBJob
         :param job_id: id of the job
         :param light: Whether used for only job variable to be initialised atm
         """
@@ -314,22 +314,22 @@ class BilbyJob(object):
 
     def __new__(cls, *args, **kwargs):
         """
-        Instantiate the Bilby Job
+        Instantiate the Bilby BilbyBJob
         :param args: arguments
         :param kwargs: keyword arguments
-        :return: Instance of Bilby Job with job variable initialised from job_id if exists
+        :return: Instance of Bilby BilbyBJob with job variable initialised from job_id if exists
                  otherwise returns None
         """
         result = super(BilbyJob, cls).__new__(cls)
         try:
-            result.job = Job.objects.get(id=kwargs.get('job_id', None))
-        except Job.DoesNotExist:
+            result.job = BilbyBJob.objects.get(id=kwargs.get('job_id', None))
+        except BilbyBJob.DoesNotExist:
             return None
         return result
 
     def as_json(self):
         """
-        Generates the json representation of the Bilby Job so that Bilby Core can digest it
+        Generates the json representation of the Bilby BilbyBJob so that Bilby Core can digest it
         :return: Json Representation
         """
 

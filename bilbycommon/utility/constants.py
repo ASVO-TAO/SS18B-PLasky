@@ -2,24 +2,24 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
-from ..models import (
-    Job,
+from bilbyweb.models import (
+    BilbyBJob,
     Data,
     Sampler,
 )
 
-from ..forms.start import StartJobForm
-from ..forms.submit import SubmitJobForm
-from ..forms.data.data import DataForm
-from ..forms.data.data_simulated import SimulatedDataParameterForm
-from ..forms.data.data_open import OpenDataParameterForm
-from ..forms.signal.signal import SignalForm
-from ..forms.signal.signal_parameter import SignalParameterBbhForm
-from ..forms.prior.prior import PriorForm
-from ..forms.sampler.sampler import SamplerForm
-from ..forms.sampler.sampler_dynesty import SamplerDynestyParameterForm
-from ..forms.sampler.sampler_nestle import SamplerNestleParameterForm
-from ..forms.sampler.sampler_emcee import SamplerEmceeParameterForm
+from bilbyweb.forms.start import StartJobForm
+from bilbyweb.forms.submit import SubmitJobForm
+from bilbyweb.forms.data.data import DataForm
+from bilbyweb.forms.data.data_simulated import SimulatedDataParameterForm
+from bilbyweb.forms.data.data_open import OpenDataParameterForm
+from bilbyweb.forms.signal.signal import SignalForm
+from bilbyweb.forms.signal.signal_parameter import SignalParameterBbhForm
+from bilbyweb.forms.prior.prior import PriorForm
+from bilbyweb.forms.sampler.sampler import SamplerForm
+from bilbyweb.forms.sampler.sampler_dynesty import SamplerDynestyParameterForm
+from bilbyweb.forms.sampler.sampler_nestle import SamplerNestleParameterForm
+from bilbyweb.forms.sampler.sampler_emcee import SamplerEmceeParameterForm
 
 # Number of jobs to be displayed in a page showing list view
 # Ex: My Jobs, My Drafts, All Jobs, Public Jobs etc.
@@ -48,7 +48,7 @@ def set_dict_indices(my_array):
     return my_dict
 
 
-# Job Creation/Edit/Summary related
+# BilbyBJob Creation/Edit/Summary related
 START = 'start'
 DATA = 'data'
 DATA_OPEN = 'data-open'
@@ -105,7 +105,7 @@ FORMS_NEW = {
 
 # Maps models to form keys for models that use Django Model Forms.
 MODELS = {
-    START: Job,
+    START: BilbyBJob,
     DATA: Data,
     SAMPLER: Sampler,
 }

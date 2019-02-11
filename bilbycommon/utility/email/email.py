@@ -4,7 +4,7 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 
 from accounts.mailer import email
 from accounts.utility import get_absolute_site_url
-
+from . import templates
 from ..display_names import (
     ERROR,
     ERROR_DISPLAY,
@@ -14,13 +14,11 @@ from ..display_names import (
     OUT_OF_MEMORY_DISPLAY,
 )
 
-from . import templates
-
 
 def email_notification_job_done(job):
     """
-    Sends out email notification to the Job owner
-    :param job: instance of a Job
+    Sends out email notification to the BilbyBJob owner
+    :param job: instance of a BilbyBJob
     :return: Nothing
     """
 

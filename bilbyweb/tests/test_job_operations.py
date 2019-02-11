@@ -2,26 +2,24 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
+from http import HTTPStatus
+
 from django.test import (
     TestCase,
     Client,
 )
-
 from django.urls import reverse
-from http import HTTPStatus
 from testfixtures.logcapture import LogCapture
 
-from ..utility.display_names import PUBLIC
+from bilbycommon.utility.display_names import PUBLIC
 from django_hpc_job_controller.client.scheduler.status import JobStatus
-
-from ..models import (
-    Job,
-)
-
 from .utility import (
     TestData,
     get_admins,
     get_members,
+)
+from ..models import (
+    BilbyBJob,
 )
 
 
@@ -42,7 +40,7 @@ class TestJobView(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -61,7 +59,7 @@ class TestJobView(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -81,7 +79,7 @@ class TestJobView(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -101,7 +99,7 @@ class TestJobView(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -121,7 +119,7 @@ class TestJobView(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -153,7 +151,7 @@ class TestJobCopy(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -172,7 +170,7 @@ class TestJobCopy(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -190,12 +188,12 @@ class TestJobCopy(TestCase):
         Test job owner can copy a job
         """
         # remove all drafts for the user for checking
-        Job.objects.filter(job_status=JobStatus.DRAFT, user=self.members[0]).delete()
+        BilbyBJob.objects.filter(job_status=JobStatus.DRAFT, user=self.members[0]).delete()
 
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             job_status=JobStatus.COMPLETED,
@@ -209,19 +207,19 @@ class TestJobCopy(TestCase):
         self.assertEquals(response.status_code, HTTPStatus.FOUND)
 
         # check draft job has been created
-        self.assertEquals(Job.objects.filter(job_status=JobStatus.DRAFT, user=self.members[0]).exists(), True)
+        self.assertEquals(BilbyBJob.objects.filter(job_status=JobStatus.DRAFT, user=self.members[0]).exists(), True)
 
     def test_admin(self):
         """
         Test admin can copy a job
         """
         # remove all drafts for the user for checking
-        Job.objects.filter(job_status=JobStatus.DRAFT, user=self.admins[0]).delete()
+        BilbyBJob.objects.filter(job_status=JobStatus.DRAFT, user=self.admins[0]).delete()
 
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             job_status=JobStatus.COMPLETED,
@@ -235,19 +233,19 @@ class TestJobCopy(TestCase):
         self.assertEquals(response.status_code, HTTPStatus.FOUND)
 
         # check draft job has been created
-        self.assertEquals(Job.objects.filter(job_status=JobStatus.DRAFT, user=self.admins[0]).exists(), True)
+        self.assertEquals(BilbyBJob.objects.filter(job_status=JobStatus.DRAFT, user=self.admins[0]).exists(), True)
 
     def test_members_can_copy_public_job(self):
         """
         Test any logged in user can copy a public
         """
         # remove all drafts for the user for checking
-        Job.objects.filter(job_status=JobStatus.DRAFT, user=self.members[1]).delete()
+        BilbyBJob.objects.filter(job_status=JobStatus.DRAFT, user=self.members[1]).delete()
 
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             job_status=JobStatus.COMPLETED,
@@ -262,19 +260,19 @@ class TestJobCopy(TestCase):
         self.assertEquals(response.status_code, HTTPStatus.FOUND)
 
         # check draft job has been created
-        self.assertEquals(Job.objects.filter(job_status=JobStatus.DRAFT, user=self.members[1]).exists(), True)
+        self.assertEquals(BilbyBJob.objects.filter(job_status=JobStatus.DRAFT, user=self.members[1]).exists(), True)
 
     def test_job_name_error(self):
         """
         Test job owner can copy a job
         """
         # remove all drafts for the user for checking
-        Job.objects.filter(job_status=JobStatus.DRAFT, user=self.members[0]).delete()
+        BilbyBJob.objects.filter(job_status=JobStatus.DRAFT, user=self.members[0]).delete()
 
         job_name = 'a' * 255
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             job_status=JobStatus.COMPLETED,
@@ -295,7 +293,7 @@ class TestJobCopy(TestCase):
         self.assertEquals(response.status_code, HTTPStatus.OK)
 
         # check draft job has NOT been created
-        self.assertEquals(Job.objects.filter(job_status=JobStatus.DRAFT, user=self.members[0]).exists(), False)
+        self.assertEquals(BilbyBJob.objects.filter(job_status=JobStatus.DRAFT, user=self.members[0]).exists(), False)
 
         # 404 page displayed
         self.assertTemplateUsed(response, 'bilbyweb/error_404.html')
@@ -318,7 +316,7 @@ class TestJobEdit(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -337,7 +335,7 @@ class TestJobEdit(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -357,7 +355,7 @@ class TestJobEdit(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             job_status=JobStatus.DRAFT,
@@ -377,7 +375,7 @@ class TestJobEdit(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             job_status=JobStatus.DRAFT,
@@ -408,7 +406,7 @@ class TestJobCancel(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -427,7 +425,7 @@ class TestJobCancel(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = Job.objects.create(
+        job = BilbyBJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],

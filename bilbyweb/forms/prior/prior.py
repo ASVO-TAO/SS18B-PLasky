@@ -3,18 +3,17 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
 from collections import OrderedDict
-
 from django import forms
 
-from ...utility.display_names import UNIFORM, FIXED
+from bilbycommon.utility.display_names import UNIFORM, FIXED
+from .utility import (
+    get_field_properties_by_signal_choice,
+    classify_fields,
+)
 from ..dynamic.form import DynamicForm
 from ...models import (
     Prior,
     Signal,
-)
-from .utility import (
-    get_field_properties_by_signal_choice,
-    classify_fields,
 )
 
 

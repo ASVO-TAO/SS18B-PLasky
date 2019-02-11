@@ -5,8 +5,8 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from bilbycommon.utility.display_names import DATA_CHOICE_DISPLAY, DATA_CHOICE
 from ...models import Data
-from ...utility.display_names import DATA_CHOICE_DISPLAY, DATA_CHOICE
 
 FIELDS = [DATA_CHOICE, ]
 

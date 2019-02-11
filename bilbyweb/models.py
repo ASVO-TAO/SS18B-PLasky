@@ -5,28 +5,14 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 from django.conf import settings
 from django.db import models
 
-from django_hpc_job_controller.models import HpcJob
+from bilbycommon.models import JobCommon
+from bilbycommon.utility.display_names import *
 
-from .utility.display_names import *
 
-
-class Job(HpcJob):
+class BilbyBJob(JobCommon):
     """
-    Job model extending HpcJob
+    BilbyBJob model extending HpcJob
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_job', on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, blank=False, null=False)
-    description = models.TextField(blank=True, null=True)
-
-    STATUS_CHOICES = [
-        (NONE, NONE_DISPLAY),
-        (PUBLIC, PUBLIC_DISPLAY),
-    ]
-
-    extra_status = models.CharField(max_length=20, choices=STATUS_CHOICES, blank=False, default=NONE)
-    creation_time = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now_add=True)
-    json_representation = models.TextField(null=True, blank=True)
 
     @property
     def status_display(self):
@@ -56,15 +42,10 @@ class Job(HpcJob):
     def bilby_job(self):
         """
         Creates a LIGHT bilby job instance usually for list actions
-        :return: Bilby Job instance
+        :return: Bilby BilbyBJob instance
         """
-        from bilbyweb.utility.job import BilbyJob
+        from bilbycommon.utility.job import BilbyJob
         return BilbyJob(job_id=self.pk, light=True)
-
-    class Meta:
-        unique_together = (
-            ('user', 'name'),
-        )
 
     def __str__(self):
         return '{}'.format(self.name)
@@ -85,7 +66,7 @@ class Data(models.Model):
     """
     Model to store Data Information
     """
-    job = models.OneToOneField(Job, related_name='job_data', on_delete=models.CASCADE)
+    job = models.OneToOneField(BilbyBJob, related_name='job_data', on_delete=models.CASCADE)
 
     DATA_CHOICES = [
         (SIMULATED_DATA, SIMULATED_DATA_DISPLAY),
@@ -122,9 +103,9 @@ class DataParameter(models.Model):
 
 class Signal(models.Model):
     """
-    Model to store Signal Injection for the Job
+    Model to store Signal Injection for the BilbyBJob
     """
-    job = models.OneToOneField(Job, related_name='job_signal', on_delete=models.CASCADE)
+    job = models.OneToOneField(BilbyBJob, related_name='job_signal', on_delete=models.CASCADE)
 
     SIGNAL_CHOICES = [
         (SKIP, SKIP_DISPLAY),
@@ -166,9 +147,9 @@ class SignalParameter(models.Model):
 
 class Prior(models.Model):
     """
-    Model to store Prior Information for the Job
+    Model to store Prior Information for the BilbyBJob
     """
-    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name='job_prior')
+    job = models.ForeignKey(BilbyBJob, on_delete=models.CASCADE, related_name='job_prior')
     name = models.CharField(max_length=50, blank=False, null=False)
     CHOICES = [
         (FIXED, FIXED_DISPLAY),
@@ -199,7 +180,7 @@ class Sampler(models.Model):
     """
     Model to store Sampler Information
     """
-    job = models.OneToOneField(Job, related_name='job_sampler', on_delete=models.CASCADE)
+    job = models.OneToOneField(BilbyBJob, related_name='job_sampler', on_delete=models.CASCADE)
 
     SAMPLER_CHOICES = [
         (DYNESTY, DYNESTY_DISPLAY),

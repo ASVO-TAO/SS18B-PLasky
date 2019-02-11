@@ -27,7 +27,7 @@ urlpatterns = [
     path('drafts/', jobs.drafts, name='drafts'),
     path('all_drafts/', jobs.all_drafts, name='all_drafts'),
 
-    # Job asset retrieval
+    # BilbyBJob asset retrieval
     path('download_asset/<int:job_id>/<int:download>/<path:file_path>', login_required(jobs.download_asset),
          name='download_asset'),
 ]
