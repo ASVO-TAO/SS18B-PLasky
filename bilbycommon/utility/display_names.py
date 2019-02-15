@@ -47,6 +47,12 @@ DELETED_DISPLAY = 'Deleted'
 PUBLIC = 'public'
 PUBLIC_DISPLAY = 'Public'
 
+# Job Types
+BAYESIAN = 'bayesian'
+BAYESIAN_DISPLAY = 'Bayesian'
+GRAVITATIONAL = 'gravitational'
+GRAVITATIONAL_DISPLAY = 'Gravitational'
+
 DISPLAY_NAME_MAP.update({
     DRAFT: DRAFT_DISPLAY,
     PENDING: PENDING_DISPLAY,

@@ -19,12 +19,15 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    path('{}'.format(settings.ROOT_SUBDIRECTORY_PATH),
+    path(
+        '{}'.format(settings.ROOT_SUBDIRECTORY_PATH),
         include(
             [
                 path('admin/', admin.site.urls),
                 path('accounts/', include('accounts.urls')),
-                path('', include('bilbyweb.urls')),
+                path('bayesian/', include('bilbyweb.urls')),
+                path('gravitational/', include('bilbygw.urls')),
+                path('', include('bilbycommon.urls')),
             ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
         )
     )

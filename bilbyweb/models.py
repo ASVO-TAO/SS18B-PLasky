@@ -2,7 +2,6 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
-from django.conf import settings
 from django.db import models
 
 from bilbycommon.models import JobCommon
@@ -46,6 +45,15 @@ class BilbyBJob(JobCommon):
         """
         from bilbycommon.utility.job import BilbyJob
         return BilbyJob(job_id=self.pk, light=True)
+
+    def save(self, *args, **kwargs):
+        """
+        Overriding save method to insert the type BAYESIAN
+        :param args: arguments passed to method
+        :param kwargs: keyword arguments passed to the method
+        """
+        self.job_type = BAYESIAN
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return '{}'.format(self.name)

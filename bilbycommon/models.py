@@ -23,6 +23,13 @@ class JobCommon(HpcJob):
     last_updated = models.DateTimeField(auto_now_add=True)
     json_representation = models.TextField(null=True, blank=True)
 
+    JOB_TYPES = [
+        (BAYESIAN, BAYESIAN_DISPLAY),
+        (GRAVITATIONAL, GRAVITATIONAL_DISPLAY),
+    ]
+
+    job_type = models.CharField(max_length=20, choices=JOB_TYPES, blank=False, default=BAYESIAN)
+
     @property
     def status_display(self):
         """
@@ -51,7 +58,7 @@ class JobCommon(HpcJob):
     def bilby_job(self):
         """
         Creates a LIGHT bilby job instance usually for list actions
-        :return: Bilby BilbyBJob instance
+        :return: Bilby Job instance
         """
         raise NotImplemented
 
