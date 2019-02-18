@@ -13,7 +13,7 @@ def index(request):
     """
     return render(
         request,
-        "bilbyweb/welcome.html",
+        "bilbycommon/welcome.html",
     )
 
 
@@ -25,7 +25,7 @@ def about(request):
     """
     return render(
         request,
-        'bilbyweb/about.html',
+        'bilbycommon/about.html',
     )
 
 
@@ -36,4 +36,4 @@ def error_404_view(request, exception):
     :return: Rendered template
     """
     data = {"name": "not used yet"}
-    return render(request, 'bilbyweb/error_404.html', data)
+    return render(request, 'bilbycommon/error_404.html', data)

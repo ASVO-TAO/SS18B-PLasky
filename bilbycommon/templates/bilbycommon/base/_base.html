@@ -24,7 +24,7 @@
           integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 
     <!-- Home styles -->
-    <link rel="stylesheet" href="{% static 'style/styles.css' %}"/>
+    <link rel="stylesheet" href="{% static 'bilbycommon/style/styles.css' %}"/>
     {% block additional_styles %}
     {% endblock additional_styles %}
 
@@ -35,14 +35,14 @@
     <link href="https://fonts.googleapis.com/css?family=Arvo:400,700%7CSlabo+27px&effect=anaglyph" rel="stylesheet">
 </head>
 <body>
-{% include 'base/header.html' %}
+{% include 'bilbycommon/base/header.html' %}
 
 <div class="main-content">
     {% block main_content %}
     {% endblock main_content %}
 </div>
 
-{% include 'base/footer.html' %}
+{% include 'bilbycommon/base/footer.html' %}
 
 {% block javascript %}
 {% endblock javascript %}

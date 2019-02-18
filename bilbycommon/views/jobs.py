@@ -56,7 +56,7 @@ def public_jobs(request):
 
     return render(
         request,
-        "bilbyweb/job/all-jobs.html",
+        "bilbycommon/all-jobs.html",
         {
             'jobs': bilby_jobs,
             'public': True,
@@ -96,7 +96,7 @@ def jobs(request):
 
     return render(
         request,
-        "bilbyweb/job/all-jobs.html",
+        "bilbycommon/all-jobs.html",
         {
             'jobs': bilby_jobs,
         }
@@ -135,7 +135,7 @@ def all_jobs(request):
 
     return render(
         request,
-        "bilbyweb/job/all-jobs.html",
+        "bilbycommon/all-jobs.html",
         {
             'jobs': bilby_jobs,
             'admin_view': True,
@@ -173,7 +173,7 @@ def drafts(request):
 
     return render(
         request,
-        "bilbyweb/job/all-jobs.html",
+        "bilbycommon/all-jobs.html",
         {
             'jobs': bilby_jobs,
             'drafts': True,
@@ -212,7 +212,7 @@ def all_drafts(request):
 
     return render(
         request,
-        "bilbyweb/job/all-jobs.html",
+        "bilbycommon/all-jobs.html",
         {
             'jobs': bilby_jobs,
             'drafts': True,
@@ -250,7 +250,7 @@ def deleted_jobs(request):
 
     return render(
         request,
-        "bilbyweb/job/all-jobs.html",
+        "bilbycommon/all-jobs.html",
         {
             'jobs': bilby_jobs,
             'deleted': True,
@@ -288,7 +288,7 @@ def all_deleted_jobs(request):
 
     return render(
         request,
-        "bilbyweb/job/all-jobs.html",
+        "bilbycommon/all-jobs.html",
         {
             'jobs': bilby_jobs,
             'deleted': True,

@@ -57,7 +57,7 @@ ROOT_URLCONF = 'bilbyui.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '../templates')],
+        'DIRS': [os.path.join(BASE_DIR, '../bilbycommon/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,8 +124,9 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, '../static-files/')
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "../static/"),
     os.path.join(BASE_DIR, "../bilbyweb/static/"),
+    os.path.join(BASE_DIR, "../bilbycommon/static/"),
+    os.path.join(BASE_DIR, "../bilbygw/static/"),
     os.path.join(BASE_DIR, "../accounts/static/"),
 ]
 
