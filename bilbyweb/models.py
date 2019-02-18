@@ -74,7 +74,7 @@ class Data(models.Model):
     """
     Model to store Data Information
     """
-    job = models.OneToOneField(BilbyBJob, related_name='job_data', on_delete=models.CASCADE)
+    job = models.ForeignKey(JobCommon, on_delete=models.CASCADE, related_name='b_job_data')
 
     DATA_CHOICES = [
         (SIMULATED_DATA, SIMULATED_DATA_DISPLAY),
@@ -113,7 +113,7 @@ class Signal(models.Model):
     """
     Model to store Signal Injection for the BilbyBJob
     """
-    job = models.OneToOneField(BilbyBJob, related_name='job_signal', on_delete=models.CASCADE)
+    job = models.ForeignKey(JobCommon, on_delete=models.CASCADE)
 
     SIGNAL_CHOICES = [
         (SKIP, SKIP_DISPLAY),
@@ -157,7 +157,7 @@ class Prior(models.Model):
     """
     Model to store Prior Information for the BilbyBJob
     """
-    job = models.ForeignKey(BilbyBJob, on_delete=models.CASCADE, related_name='job_prior')
+    job = models.ForeignKey(JobCommon, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, blank=False, null=False)
     CHOICES = [
         (FIXED, FIXED_DISPLAY),
@@ -188,7 +188,7 @@ class Sampler(models.Model):
     """
     Model to store Sampler Information
     """
-    job = models.OneToOneField(BilbyBJob, related_name='job_sampler', on_delete=models.CASCADE)
+    job = models.ForeignKey(JobCommon, on_delete=models.CASCADE)
 
     SAMPLER_CHOICES = [
         (DYNESTY, DYNESTY_DISPLAY),

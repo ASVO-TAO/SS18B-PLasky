@@ -26,7 +26,7 @@ def data_migration(apps, schema_editor):
             job_pending_time=job.job_pending_time,
             job_submitting_time=job.job_submitting_time,
             job_submitted_time=job.job_submitted_time,
-            job_queued_time= job.job_queued_time,
+            job_queued_time=job.job_queued_time,
             job_running_time=job.job_running_time,
             job_finished_time=job.job_finished_time,
             job_details=job.job_details,

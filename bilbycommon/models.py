@@ -62,6 +62,19 @@ class JobCommon(HpcJob):
         """
         raise NotImplemented
 
+    def get_actual_job(self):
+        from bilbyweb.models import BilbyBJob
+        from bilbygw.models import BilbyGJob
+
+        if self.job_type == BAYESIAN:
+            job = BilbyBJob.objects.get(id=self.id)
+        elif self.job_type == GRAVITATIONAL:
+            job = BilbyGJob.objects.get(id=self.id)
+        else:
+            job = None
+
+        return job
+
     class Meta:
         unique_together = (
             ('user', 'name'),

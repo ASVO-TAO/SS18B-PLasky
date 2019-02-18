@@ -18,11 +18,8 @@ from bilbycommon.utility.display_names import (
     DRAFT,
     PUBLIC,
     NONE,
-    BAYESIAN,
-    GRAVITATIONAL,
 )
 from bilbycommon.utility.utils import get_readable_size
-from bilbyweb.models import BilbyBJob
 from ..models import JobCommon, JobStatus
 
 logger = logging.getLogger(__name__)
@@ -49,14 +46,13 @@ def public_jobs(request):
     bilby_jobs = []
     for job in job_list:
 
-        if job.job_type == BAYESIAN:
-            job = BilbyBJob(job)
-        else:
-            continue
+        job = job.get_actual_job()
 
         bilby_job = job.bilby_job
-        bilby_job.list_actions(request.user)
-        bilby_jobs.append(bilby_job)
+
+        if bilby_job:
+            bilby_job.list_actions(request.user)
+            bilby_jobs.append(bilby_job)
 
     return render(
         request,
@@ -90,14 +86,13 @@ def jobs(request):
     bilby_jobs = []
     for job in job_list:
 
-        if job.job_type == BAYESIAN:
-            job = BilbyBJob(job)
-        else:
-            continue
+        job = job.get_actual_job()
 
         bilby_job = job.bilby_job
-        bilby_job.list_actions(request.user)
-        bilby_jobs.append(bilby_job)
+
+        if bilby_job:
+            bilby_job.list_actions(request.user)
+            bilby_jobs.append(bilby_job)
 
     return render(
         request,
@@ -130,9 +125,13 @@ def all_jobs(request):
     # it will create a light job with list of actions this user can do based on the job status
     bilby_jobs = []
     for job in job_list:
+
+        job = job.get_actual_job()
         bilby_job = job.bilby_job
-        bilby_job.list_actions(request.user)
-        bilby_jobs.append(bilby_job)
+
+        if bilby_job:
+            bilby_job.list_actions(request.user)
+            bilby_jobs.append(bilby_job)
 
     return render(
         request,
@@ -165,9 +164,12 @@ def drafts(request):
     # it will create a light job with list of actions this user can do based on the job status
     bilby_jobs = []
     for job in job_list:
+        job = job.get_actual_job()
         bilby_job = job.bilby_job
-        bilby_job.list_actions(request.user)
-        bilby_jobs.append(bilby_job)
+
+        if bilby_job:
+            bilby_job.list_actions(request.user)
+            bilby_jobs.append(bilby_job)
 
     return render(
         request,
@@ -201,9 +203,12 @@ def all_drafts(request):
     # it will create a light job with list of actions this user can do based on the job status
     bilby_jobs = []
     for job in job_list:
+        job = job.get_actual_job()
         bilby_job = job.bilby_job
-        bilby_job.list_actions(request.user)
-        bilby_jobs.append(bilby_job)
+
+        if bilby_job:
+            bilby_job.list_actions(request.user)
+            bilby_jobs.append(bilby_job)
 
     return render(
         request,
@@ -236,9 +241,12 @@ def deleted_jobs(request):
     # it will create a light job with list of actions this user can do based on the job status
     bilby_jobs = []
     for job in job_list:
+        job = job.get_actual_job()
         bilby_job = job.bilby_job
-        bilby_job.list_actions(request.user)
-        bilby_jobs.append(bilby_job)
+
+        if bilby_job:
+            bilby_job.list_actions(request.user)
+            bilby_jobs.append(bilby_job)
 
     return render(
         request,
@@ -271,9 +279,12 @@ def all_deleted_jobs(request):
     # it will create a light job with list of actions this user can do based on the job status
     bilby_jobs = []
     for job in job_list:
+        job = job.get_actual_job()
         bilby_job = job.bilby_job
-        bilby_job.list_actions(request.user)
-        bilby_jobs.append(bilby_job)
+
+        if bilby_job:
+            bilby_job.list_actions(request.user)
+            bilby_jobs.append(bilby_job)
 
     return render(
         request,
@@ -336,6 +347,7 @@ def view_job(request, job_id):
 
             # Check that this user has access to this job
             # it can view if there is a copy access
+            job = job.get_actual_job()
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
@@ -421,6 +433,7 @@ def copy_job(request, job_id):
             job = JobCommon.objects.get(id=job_id)
 
             # Check whether user can copy the job
+            job = job.get_actual_job()
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
@@ -446,7 +459,7 @@ def copy_job(request, job_id):
         # loading job as draft and redirecting to the new job view
         request.session['to_load'] = job.as_json()
 
-    return redirect('new_job')
+    return redirect('new_b_job')
 
 
 @login_required
@@ -467,6 +480,7 @@ def edit_job(request, job_id):
             job = JobCommon.objects.get(id=job_id)
 
             # Checks the edit permission for the user
+            job = job.get_actual_job()
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
@@ -508,6 +522,7 @@ def cancel_job(request, job_id):
         try:
             job = JobCommon.objects.get(id=job_id)
 
+            job = job.get_actual_job()
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
@@ -567,7 +582,7 @@ def delete_job(request, job_id):
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
-
+            job = job.get_actual_job()
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
@@ -652,7 +667,7 @@ def make_job_private(request, job_id):
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
-
+            job = job.get_actual_job()
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
@@ -699,7 +714,7 @@ def make_job_public(request, job_id):
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
-
+            job = job.get_actual_job()
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
 
