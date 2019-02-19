@@ -25,8 +25,8 @@ from bilbycommon.utility.display_names import (
     DEC,
     DEC_DISPLAY,
 )
-from ..dynamic import field
-from ..dynamic.form import DynamicForm
+from bilbycommon.forms.dynamic import field
+from bilbycommon.forms.dynamic.form import DynamicForm
 from ...models import SignalParameter, Signal, Prior
 
 BBH_FIELDS_PROPERTIES = OrderedDict([

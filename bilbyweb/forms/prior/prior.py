@@ -10,7 +10,7 @@ from .utility import (
     get_field_properties_by_signal_choice,
     classify_fields,
 )
-from ..dynamic.form import DynamicForm
+from bilbycommon.forms.dynamic.form import DynamicForm
 from ...models import (
     Prior,
     Signal,

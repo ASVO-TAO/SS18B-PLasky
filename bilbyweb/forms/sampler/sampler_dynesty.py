@@ -9,8 +9,8 @@ from bilbycommon.utility.display_names import (
     NUMBER_OF_LIVE_POINTS,
     NUMBER_OF_LIVE_POINTS_DISPLAY,
 )
-from ..dynamic import field
-from ..dynamic.form import DynamicForm
+from bilbycommon.forms.dynamic import field
+from bilbycommon.forms.dynamic.form import DynamicForm
 from ...models import SamplerParameter, Sampler
 
 DYNESTY_FIELDS_PROPERTIES = OrderedDict([

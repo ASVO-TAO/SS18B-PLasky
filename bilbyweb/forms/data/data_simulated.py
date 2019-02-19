@@ -23,8 +23,8 @@ from bilbycommon.utility.display_names import (
     VIRGO_DISPLAY,
 )
 from bilbycommon.utility.display_names import SIMULATED_DATA
-from ..dynamic import field
-from ..dynamic.form import DynamicForm
+from bilbycommon.forms.dynamic import field
+from bilbycommon.forms.dynamic.form import DynamicForm
 from ...models import DataParameter, Data
 
 DETECTOR_CHOICES = [

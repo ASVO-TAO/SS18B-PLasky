@@ -5,7 +5,7 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 from collections import OrderedDict
 
 from bilbycommon.utility.display_names import BINARY_BLACK_HOLE
-from ..dynamic.field import SELECT
+from bilbycommon.forms.dynamic.field import SELECT
 from ..signal.signal_parameter import BBH_FIELDS_PROPERTIES
 from ...models import Prior, SignalParameter
 

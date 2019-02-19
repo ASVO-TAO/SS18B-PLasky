@@ -15,8 +15,8 @@ from bilbycommon.utility.display_names import (
     SAME_MODEL,
     SAME_MODEL_DISPLAY,
 )
-from ..dynamic import field
-from ..dynamic.form import DynamicForm
+from bilbycommon.forms.dynamic import field
+from bilbycommon.forms.dynamic.form import DynamicForm
 from ...models import (
     Signal,
     Data,

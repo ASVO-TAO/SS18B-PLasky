@@ -7,8 +7,8 @@ import logging
 from collections import OrderedDict
 
 from bilbycommon.utility.job import BilbyJob
-from .dynamic import field
-from .dynamic.form import DynamicForm
+from bilbycommon.forms.dynamic import field
+from bilbycommon.forms.dynamic.form import DynamicForm
 
 logger = logging.getLogger(__name__)
 

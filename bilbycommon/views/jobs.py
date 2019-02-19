@@ -18,6 +18,8 @@ from bilbycommon.utility.display_names import (
     DRAFT,
     PUBLIC,
     NONE,
+    BAYESIAN,
+    GRAVITATIONAL,
 )
 from bilbycommon.utility.utils import get_readable_size
 from ..models import JobCommon, JobStatus
@@ -459,7 +461,12 @@ def copy_job(request, job_id):
         # loading job as draft and redirecting to the new job view
         request.session['to_load'] = job.as_json()
 
-    return redirect('new_b_job')
+    if job and job.job_type == BAYESIAN:
+        return redirect('new_b_job')
+    elif job and job.job_type == GRAVITATIONAL:
+        return redirect('new_g_job')
+    else:
+        return redirect('/')
 
 
 @login_required
@@ -498,7 +505,12 @@ def edit_job(request, job_id):
         # loading job as draft and redirecting to the new job view
         request.session['to_load'] = job.as_json()
 
-    return redirect('new_job')
+    if job and job.job_type == BAYESIAN:
+        return redirect('new_b_job')
+    elif job and job.job_type == GRAVITATIONAL:
+        return redirect('new_g_job')
+    else:
+        return redirect('/')
 
 
 @login_required
