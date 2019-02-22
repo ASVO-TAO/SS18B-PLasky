@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class BilbygwConfig(AppConfig):
-    name = 'bilbygw'
+    name = 'bilbycw'

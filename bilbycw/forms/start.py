@@ -7,7 +7,7 @@ import logging
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from ..models import BilbyPEJob
+from ..models import BilbyCWJob
 
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class StartJobForm(forms.ModelForm):
         self.fields['description'].widget.attrs.update({'class': 'form-control'})
 
     class Meta:
-        model = BilbyPEJob
+        model = BilbyCWJob
         fields = FIELDS
         labels = LABELS
 
@@ -52,7 +52,7 @@ class StartJobForm(forms.ModelForm):
             return name
 
         # if exists, raise the validation error
-        if BilbyPEJob.objects.filter(
+        if BilbyCWJob.objects.filter(
                 user=self.request.user,
                 name=self.cleaned_data.get('name')
         ).exists():
@@ -72,7 +72,7 @@ class StartJobForm(forms.ModelForm):
         self.full_clean()
         data = self.cleaned_data
 
-        job_created, created = BilbyPEJob.objects.update_or_create(
+        job_created, created = BilbyCWJob.objects.update_or_create(
             user=self.request.user,
             name=self.job.name if self.job else None,
             defaults={
@@ -82,3 +82,4 @@ class StartJobForm(forms.ModelForm):
         )
 
         self.request.session['draft_job'] = job_created.as_json()
+

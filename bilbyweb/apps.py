@@ -5,4 +5,4 @@ class BilbywebConfig(AppConfig):
     name = 'bilbyweb'
 
     def ready(self):
-        import bilbyweb.signals
+        pass

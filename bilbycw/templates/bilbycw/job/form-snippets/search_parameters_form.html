@@ -1,0 +1,12 @@
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <input type="hidden" name="form-tab" value="data"/>
+
+
+
+    <div id="data-tab-navigation">
+        {% include 'bilbycommon/snippets/pager.html' %}
+    </div>
+
+</form>

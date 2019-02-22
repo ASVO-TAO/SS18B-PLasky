@@ -2,7 +2,7 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
-from .constants import (
+from bilbyweb.utility.constants import (
     START,
     DATA,
     SIGNAL,
@@ -63,7 +63,7 @@ def get_enabled_tabs(bilby_job, active_tab):
     """
 
     # for any bilby job at least First Two tabs should be enabled
-    # because, Start tab must have been submitted before a BilbyBJob is created
+    # because, Start tab must have been submitted before a BilbyPEJob is created
     # and as a result the user should be able to see Data Tab
     enabled_tabs = [START, DATA]
 

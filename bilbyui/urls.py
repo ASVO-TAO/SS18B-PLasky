@@ -25,8 +25,8 @@ urlpatterns = [
             [
                 path('admin/', admin.site.urls),
                 path('accounts/', include('accounts.urls')),
-                path('bayesian/', include('bilbyweb.urls')),
-                path('gravitational/', include('bilbygw.urls')),
+                path('parameter_estimation/', include('bilbyweb.urls')),
+                path('continuous_wave/', include('bilbycw.urls')),
                 path('', include('bilbycommon.urls')),
             ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
         )

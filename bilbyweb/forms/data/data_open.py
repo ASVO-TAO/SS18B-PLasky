@@ -21,8 +21,8 @@ from bilbycommon.utility.display_names import (
     LIVINGSTON_DISPLAY,
     VIRGO,
     VIRGO_DISPLAY,
+    OPEN_DATA,
 )
-from bilbycommon.utility.display_names import OPEN_DATA
 from bilbycommon.forms.dynamic import field
 from bilbycommon.forms.dynamic.form import DynamicForm
 from ...models import DataParameter, Data

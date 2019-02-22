@@ -4,7 +4,7 @@ from bilbycommon.models import JobCommon
 from bilbycommon.utility.display_names import *
 
 
-class BilbyGJob(JobCommon):
+class BilbyCWJob(JobCommon):
     """
     BilbyBJob model extending HpcJob
     """
@@ -48,7 +48,7 @@ class BilbyGJob(JobCommon):
         :param args: arguments passed to method
         :param kwargs: keyword arguments passed to the method
         """
-        self.job_type = GRAVITATIONAL
+        self.job_type = CONTINUOUS_WAVE
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -62,5 +62,31 @@ class BilbyGJob(JobCommon):
                 username=self.user.username,
                 status=self.status,
                 creation_time=self.creation_time.strftime('%d %b %Y %I:%m %p'),
+            ),
+        )
+
+
+class DataSource(models.Model):
+    """
+    Model to store Data Source Information
+    """
+    job = models.ForeignKey(JobCommon, on_delete=models.CASCADE, related_name='g_job_data_source')
+
+    DATA_SOURCES = [
+        (REAL_DATA, REAL_DATA_DISPLAY),
+        (FAKE_DATA, FAKE_DATA_DISPLAY),
+    ]
+
+    data_source = models.CharField(max_length=55, choices=DATA_SOURCES, default=REAL_DATA)
+
+    def __str__(self):
+        return '{} ({})'.format(self.data_source, self.job.name)
+
+    def as_json(self):
+        return dict(
+            id=self.id,
+            value=dict(
+                job=self.job.id,
+                choice=self.data_source,
             ),
         )

@@ -17,8 +17,8 @@ from ..display_names import (
 
 def email_notification_job_done(job):
     """
-    Sends out email notification to the BilbyBJob owner
-    :param job: instance of a BilbyBJob
+    Sends out email notification to the BilbyPEJob owner
+    :param job: instance of a BilbyPEJob
     :return: Nothing
     """
 

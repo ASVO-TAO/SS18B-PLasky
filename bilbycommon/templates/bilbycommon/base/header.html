@@ -13,8 +13,8 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownNewJob" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">New Job</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownNewJob">
-                        <a class="dropdown-item" href="{% url 'new_b_job' %}">Bayesian</a>
-                        <a class="dropdown-item" href="{% url 'new_g_job' %}">Gravitational</a>
+                        <a class="dropdown-item" href="{% url 'new_pe_job' %}">Parameter Estimation</a>
+                        <a class="dropdown-item" href="{% url 'new_cw_job' %}">Continuous Wave</a>
                     </div>
                 </li>
                 {% if user.is_authenticated %}

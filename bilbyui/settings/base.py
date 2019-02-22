@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'accounts',
     'bilbyweb',
     'bilbycommon',
-    'bilbygw',
+    'bilbycw',
     'django_hpc_job_controller'
 ]
 
@@ -126,7 +126,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, '../static-files/')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "../bilbyweb/static/"),
     os.path.join(BASE_DIR, "../bilbycommon/static/"),
-    os.path.join(BASE_DIR, "../bilbygw/static/"),
+    os.path.join(BASE_DIR, "../bilbycw/static/"),
     os.path.join(BASE_DIR, "../accounts/static/"),
 ]
 
@@ -195,4 +195,4 @@ ROOT_SUBDIRECTORY_PATH = ''
 
 SITE_URL = ''
 
-HPC_JOB_CLASS = 'bilbyweb.models.BilbyBJob'
+HPC_JOB_CLASS = 'bilbyweb.models.JobCommon'

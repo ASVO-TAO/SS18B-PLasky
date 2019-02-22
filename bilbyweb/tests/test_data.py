@@ -10,7 +10,7 @@ from django.urls import reverse
 from http import HTTPStatus
 
 from ..models import (
-    BilbyBJob,
+    BilbyPEJob,
     Data,
     DataParameter,
 )
@@ -31,7 +31,7 @@ class TestDataForm(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = BilbyBJob.objects.create(
+        job = BilbyPEJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -61,7 +61,7 @@ class TestDataForm(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = BilbyBJob.objects.create(
+        job = BilbyPEJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],
@@ -91,7 +91,7 @@ class TestDataForm(TestCase):
         job_name = 'a job'
         job_description = 'a job description'
 
-        job = BilbyBJob.objects.create(
+        job = BilbyPEJob.objects.create(
             name=job_name,
             description=job_description,
             user=self.members[0],

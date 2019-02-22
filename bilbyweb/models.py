@@ -8,9 +8,9 @@ from bilbycommon.models import JobCommon
 from bilbycommon.utility.display_names import *
 
 
-class BilbyBJob(JobCommon):
+class BilbyPEJob(JobCommon):
     """
-    BilbyBJob model extending HpcJob
+    BilbyPEJob model extending HpcJob
     """
 
     @property
@@ -41,7 +41,7 @@ class BilbyBJob(JobCommon):
     def bilby_job(self):
         """
         Creates a LIGHT bilby job instance usually for list actions
-        :return: Bilby BilbyBJob instance
+        :return: Bilby BilbyPEJob instance
         """
         from bilbycommon.utility.job import BilbyJob
         return BilbyJob(job_id=self.pk, light=True)
@@ -52,7 +52,7 @@ class BilbyBJob(JobCommon):
         :param args: arguments passed to method
         :param kwargs: keyword arguments passed to the method
         """
-        self.job_type = BAYESIAN
+        self.job_type = PARAMETER_ESTIMATION
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -111,7 +111,7 @@ class DataParameter(models.Model):
 
 class Signal(models.Model):
     """
-    Model to store Signal Injection for the BilbyBJob
+    Model to store Signal Injection for the BilbyPEJob
     """
     job = models.ForeignKey(JobCommon, on_delete=models.CASCADE)
 
@@ -155,7 +155,7 @@ class SignalParameter(models.Model):
 
 class Prior(models.Model):
     """
-    Model to store Prior Information for the BilbyBJob
+    Model to store Prior Information for the BilbyPEJob
     """
     job = models.ForeignKey(JobCommon, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, blank=False, null=False)

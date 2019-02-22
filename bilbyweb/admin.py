@@ -5,7 +5,7 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 from django.contrib import admin
 
 from .models import (
-    BilbyBJob,
+    BilbyPEJob,
     Data,
     DataParameter,
     Signal,
@@ -17,8 +17,8 @@ from .models import (
 
 
 # Register your models here.
-@admin.register(BilbyBJob)
-class BilbyBJob(admin.ModelAdmin):
+@admin.register(BilbyPEJob)
+class BilbyPEJob(admin.ModelAdmin):
     list_display = ('name', 'description', 'status_display', 'user',)
     search_fields = ['name', 'description', 'user__username', 'user__first_name', 'user__last_name', ]
 
@@ -38,7 +38,7 @@ class DataParameter(admin.ModelAdmin):
         return obj.data.job.name
 
     get_job.admin_order_field = 'data__job'  # Allows column order sorting
-    get_job.short_description = 'BilbyBJob'  # Renames column head
+    get_job.short_description = 'BilbyPEJob'  # Renames column head
 
     def get_data(self, obj):
         return obj.data.data_choice
@@ -62,7 +62,7 @@ class SignalParameter(admin.ModelAdmin):
         return obj.signal.job.name
 
     get_job.admin_order_field = 'signal__job'  # Allows column order sorting
-    get_job.short_description = 'BilbyBJob'  # Renames column head
+    get_job.short_description = 'BilbyPEJob'  # Renames column head
 
     def get_signal(self, obj):
         return obj.signal.signal_choice
@@ -92,7 +92,7 @@ class SamplerParameter(admin.ModelAdmin):
         return obj.sampler.job.name
 
     get_job.admin_order_field = 'sampler__job'  # Allows column order sorting
-    get_job.short_description = 'BilbyBJob'  # Renames column head
+    get_job.short_description = 'BilbyPEJob'  # Renames column head
 
     def get_sampler(self, obj):
         return obj.sampler.sampler_choice

@@ -5,22 +5,12 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from bilbycommon.utility.display_names import SKIP
 from bilbycommon.utility.job import BilbyJob
-from ..models import (
-    BilbyGJob,
-)
-from bilbycommon.utility.constants import (
+from bilbycommon.utility.utils import get_enabled_tabs
+from bilbycw.utility.constants import (
     START,
-    DATA,
-    DATA_OPEN,
-    DATA_SIMULATED,
-    SIGNAL,
-    SIGNAL_PARAMETER_BBH,
-    PRIOR,
-    SAMPLER,
-    SAMPLER_DYNESTY,
-    SAMPLER_NESTLE,
-    SAMPLER_EMCEE,
+    DATA_SOURCE,
     LAUNCH,
     MODELS,
     FORMS_NEW,
@@ -28,8 +18,9 @@ from bilbycommon.utility.constants import (
     TABS,
     TABS_INDEXES,
 )
-from bilbycommon.utility.display_names import SKIP
-from bilbycommon.utility.utils import get_enabled_tabs
+from ..models import (
+    BilbyCWJob,
+)
 
 
 def get_to_be_active_tab(active_tab, previous=False):
@@ -74,16 +65,7 @@ def generate_forms(job=None, forms=None):
     if not forms:
         forms = {
             START: None,
-            DATA: None,
-            DATA_OPEN: None,
-            DATA_SIMULATED: None,
-            SIGNAL: None,
-            SIGNAL_PARAMETER_BBH: None,
-            PRIOR: None,
-            SAMPLER: None,
-            SAMPLER_DYNESTY: None,
-            SAMPLER_NESTLE: None,
-            SAMPLER_EMCEE: None,
+            DATA_SOURCE: None,
             LAUNCH: None,
         }
 
@@ -91,7 +73,7 @@ def generate_forms(job=None, forms=None):
     if job:
         for model in MODELS:
             try:
-                # START Form is the BilbyBJob instance, for other forms it is referenced
+                # START Form is the BilbyCWJob instance, for other forms it is referenced
                 instance = job if model in [START, ] else MODELS[model].objects.get(job=job)
 
                 # do not override already generated forms.
@@ -122,23 +104,7 @@ def generate_forms(job=None, forms=None):
     # have easy update option by passing the instance.
     if job:
         # non-model forms update
-        forms[DATA_OPEN].update_from_database(job=job)
-        forms[DATA_SIMULATED].update_from_database(job=job)
-        forms[SIGNAL_PARAMETER_BBH].update_from_database(job=job)
-        forms[SIGNAL].update_from_database(job=job)
-        forms[PRIOR].update_from_database(job=job)
-        forms[SAMPLER_DYNESTY].update_from_database(job=job)
-        forms[SAMPLER_NESTLE].update_from_database(job=job)
-        forms[SAMPLER_EMCEE].update_from_database(job=job)
         forms[LAUNCH].update_from_database(job=job)
-
-        # because of too much dynamic nature, fields are by default set as non-required
-        # once everything is processed with the form, all the fields are marked as required
-        # this can be done in an alternate way:
-        # Using dynamic form for each prior
-        # then use the same approach for job to decide which forms are going to be saved
-        # the rest of the forms should be returned as initial
-        forms[PRIOR].update_fields_to_required()
 
     return forms
 
@@ -151,34 +117,23 @@ def filter_as_per_input(forms_to_save, request):
     :return: new list of forms to save
     """
 
-    # returning the corrected forms need to be saved for DATA tab
-    if DATA in forms_to_save:
-        data_choice = request.POST.get('data-data_choice', None)
-
-        if data_choice in DATA_SIMULATED:
-            forms_to_save = [DATA, DATA_SIMULATED, ]
-        else:
-            forms_to_save = [DATA, DATA_OPEN, ]
-
-    # returning the corrected forms need to be saved for SIGNAL tab
-    if SIGNAL in forms_to_save:
-        signal_choice = request.POST.get('signal-signal_choice', None)
-
-        if signal_choice == SKIP:
-            forms_to_save = [SIGNAL, ]
-        elif signal_choice in SIGNAL_PARAMETER_BBH:
-            forms_to_save = [SIGNAL, SIGNAL_PARAMETER_BBH, ]
-
-    # returning the corrected forms need to be saved for SAMPLER tab
-    if SAMPLER in forms_to_save:
-        sampler_choice = request.POST.get('sampler-sampler_choice', None)
-
-        if sampler_choice in SAMPLER_DYNESTY:
-            forms_to_save = [SAMPLER, SAMPLER_DYNESTY, ]
-        elif sampler_choice in SAMPLER_NESTLE:
-            forms_to_save = [SAMPLER, SAMPLER_NESTLE, ]
-        elif sampler_choice in SAMPLER_EMCEE:
-            forms_to_save = [SAMPLER, SAMPLER_EMCEE, ]
+    # # returning the corrected forms need to be saved for DATA tab
+    # if DATA in forms_to_save:
+    #     data_choice = request.POST.get('data-data_choice', None)
+    #
+    #     if data_choice in DATA_SIMULATED:
+    #         forms_to_save = [DATA, DATA_SIMULATED, ]
+    #     else:
+    #         forms_to_save = [DATA, DATA_OPEN, ]
+    #
+    # # returning the corrected forms need to be saved for SIGNAL tab
+    # if SIGNAL in forms_to_save:
+    #     signal_choice = request.POST.get('signal-signal_choice', None)
+    #
+    #     if signal_choice == SKIP:
+    #         forms_to_save = [SIGNAL, ]
+    #     elif signal_choice in SIGNAL_PARAMETER_BBH:
+    #         forms_to_save = [SIGNAL, SIGNAL_PARAMETER_BBH, ]
 
     return forms_to_save
 
@@ -195,8 +150,8 @@ def save_tab(request, active_tab):
 
     # check whether job exists
     try:
-        job = BilbyGJob.objects.get(id=request.session['draft_job'].get('id', None))
-    except (KeyError, AttributeError, BilbyGJob.DoesNotExist):
+        job = BilbyCWJob.objects.get(id=request.session['draft_job'].get('id', None))
+    except (KeyError, AttributeError, BilbyCWJob.DoesNotExist):
         job = None
 
     # generating the forms for the UI
@@ -230,7 +185,7 @@ def save_tab(request, active_tab):
         if job:
             job.refresh_from_db()
             # saving the job here again will call signal to update the last updated
-            # it is left to the signal because of potential change of BilbyBJob model to
+            # it is left to the signal because of potential change of BilbyPEJob model to
             # extend the HpcJob model.
             job.save()
 
@@ -287,8 +242,8 @@ def new_job(request):
 
         # Now, check whether a job exists or not
         try:
-            job = BilbyGJob.objects.get(id=request.session['draft_job'].get('id', None))
-        except (KeyError, AttributeError, BilbyGJob.DoesNotExist):
+            job = BilbyCWJob.objects.get(id=request.session['draft_job'].get('id', None))
+        except (KeyError, AttributeError, BilbyCWJob.DoesNotExist):
             job = None
 
         # generate forms
@@ -305,7 +260,7 @@ def new_job(request):
 
     return render(
         request,
-        "bilbygw/job/edit-job.html",
+        "bilbycw/job/edit-job.html",
         {
             'active_tab': active_tab,
             'enabled_tabs': enabled_tabs,
@@ -313,16 +268,7 @@ def new_job(request):
             'new_job': False,
 
             'start_form': forms[START],
-            # 'data_form': forms[DATA],
-            # 'data_simulated_form': forms[DATA_SIMULATED],
-            # 'data_open_form': forms[DATA_OPEN],
-            # 'signal_form': forms[SIGNAL],
-            # 'signal_parameter_bbh_form': forms[SIGNAL_PARAMETER_BBH],
-            # 'prior_form': forms[PRIOR],
-            # 'sampler_form': forms[SAMPLER],
-            # 'sampler_dynesty_form': forms[SAMPLER_DYNESTY],
-            # 'sampler_nestle_form': forms[SAMPLER_NESTLE],
-            # 'sampler_emcee_form': forms[SAMPLER_EMCEE],
+            'data_source_form': forms[DATA_SOURCE],
             'submit_form': forms[LAUNCH],
 
             # job so far...

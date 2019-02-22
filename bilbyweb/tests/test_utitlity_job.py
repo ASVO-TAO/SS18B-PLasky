@@ -8,7 +8,7 @@ from django.test import (
 
 from bilbycommon.utility.job import BilbyJob
 from .utility import TestData, get_members
-from ..models import BilbyBJob
+from ..models import BilbyPEJob
 
 
 class TestBilbyJob(TestCase):
@@ -18,7 +18,7 @@ class TestBilbyJob(TestCase):
         cls.members = get_members()
 
     def test_job_creation(self):
-        job = BilbyBJob.objects.create(
+        job = BilbyPEJob.objects.create(
             user=self.members[0],
             name='a job',
             description='a job description',
@@ -29,7 +29,7 @@ class TestBilbyJob(TestCase):
         self.assertEquals(b_job.job, job)
 
     def test_job_creation_invalid(self):
-        BilbyBJob.objects.create(
+        BilbyPEJob.objects.create(
             user=self.members[0],
             name='a job',
             description='a job description',

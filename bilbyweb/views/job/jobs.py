@@ -16,7 +16,7 @@ from bilbycommon.utility.display_names import (
     NONE,
 )
 from bilbycommon.utility.utils import get_readable_size
-from ...models import BilbyBJob
+from ...models import BilbyPEJob
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ def download_asset(request, job_id, download, file_path):
     :return: A HttpStreamingResponse object representing the file
     """
     # Get the job
-    job = get_object_or_404(BilbyBJob, id=job_id)
+    job = get_object_or_404(BilbyPEJob, id=job_id)
 
     # Check that this user has access to this job
     # it can download assets if there is a copy access
@@ -64,10 +64,10 @@ def view_job(request, job_id):
     job = None
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
-            job = BilbyBJob.objects.get(id=job_id)
+            job = BilbyPEJob.objects.get(id=job_id)
 
             # Check that this user has access to this job
             # it can view if there is a copy access
@@ -130,7 +130,7 @@ def view_job(request, job_id):
                         'job_data': job_data
                     }
                 )
-        except BilbyBJob.DoesNotExist:
+        except BilbyPEJob.DoesNotExist:
             pass
 
     if not job:
@@ -150,10 +150,10 @@ def copy_job(request, job_id):
     job = None
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
-            job = BilbyBJob.objects.get(id=job_id)
+            job = BilbyPEJob.objects.get(id=job_id)
 
             # Check whether user can copy the job
             bilby_job = job.bilby_job
@@ -169,7 +169,7 @@ def copy_job(request, job_id):
                     logger.info('Cannot copy job due to name length, job id: {}'.format(bilby_job.job.id))
                     # should return error about name length
                     pass
-        except BilbyBJob.DoesNotExist:
+        except BilbyPEJob.DoesNotExist:
             pass
 
     # this should be the last line before redirect
@@ -196,10 +196,10 @@ def edit_job(request, job_id):
     job = None
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
-            job = BilbyBJob.objects.get(id=job_id)
+            job = BilbyPEJob.objects.get(id=job_id)
 
             # Checks the edit permission for the user
             bilby_job = job.bilby_job
@@ -207,7 +207,7 @@ def edit_job(request, job_id):
 
             if 'edit' not in bilby_job.job_actions:
                 job = None
-        except BilbyBJob.DoesNotExist:
+        except BilbyPEJob.DoesNotExist:
             pass
 
     # this should be the last line before redirect
@@ -238,10 +238,10 @@ def cancel_job(request, job_id):
     to_page = 'jobs'
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
-            job = BilbyBJob.objects.get(id=job_id)
+            job = BilbyPEJob.objects.get(id=job_id)
 
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
@@ -254,7 +254,7 @@ def cancel_job(request, job_id):
                 job.cancel()
 
                 should_redirect = True
-        except BilbyBJob.DoesNotExist:
+        except BilbyPEJob.DoesNotExist:
             pass
 
     # this should be the last line before redirect
@@ -298,10 +298,10 @@ def delete_job(request, job_id):
     to_page = 'drafts'
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
-            job = BilbyBJob.objects.get(id=job_id)
+            job = BilbyPEJob.objects.get(id=job_id)
 
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
@@ -311,7 +311,7 @@ def delete_job(request, job_id):
                 should_redirect = False
             else:
 
-                message = 'BilbyBJob <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
+                message = 'BilbyPEJob <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
 
                 if job.status == DRAFT:
 
@@ -332,7 +332,7 @@ def delete_job(request, job_id):
                 messages.add_message(request, messages.SUCCESS, message, extra_tags='safe')
                 should_redirect = True
 
-        except BilbyBJob.DoesNotExist:
+        except BilbyPEJob.DoesNotExist:
             pass
 
     if not should_redirect:
@@ -383,10 +383,10 @@ def make_job_private(request, job_id):
     should_redirect = False
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
-            job = BilbyBJob.objects.get(id=job_id)
+            job = BilbyPEJob.objects.get(id=job_id)
 
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
@@ -397,9 +397,9 @@ def make_job_private(request, job_id):
                 job.save()
 
                 should_redirect = True
-                messages.success(request, 'BilbyBJob has been changed to <strong>private!</strong>', extra_tags='safe')
+                messages.success(request, 'BilbyPEJob has been changed to <strong>private!</strong>', extra_tags='safe')
 
-        except BilbyBJob.DoesNotExist:
+        except BilbyPEJob.DoesNotExist:
             pass
 
     # this should be the last line before redirect
@@ -430,10 +430,10 @@ def make_job_public(request, job_id):
     should_redirect = False
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
-            job = BilbyBJob.objects.get(id=job_id)
+            job = BilbyPEJob.objects.get(id=job_id)
 
             bilby_job = job.bilby_job
             bilby_job.list_actions(request.user)
@@ -444,9 +444,9 @@ def make_job_public(request, job_id):
                 job.save()
 
                 should_redirect = True
-                messages.success(request, 'BilbyBJob has been changed to <strong>public!</strong>', extra_tags='safe')
+                messages.success(request, 'BilbyPEJob has been changed to <strong>public!</strong>', extra_tags='safe')
 
-        except BilbyBJob.DoesNotExist:
+        except BilbyPEJob.DoesNotExist:
             pass
 
     # this should be the last line before redirect

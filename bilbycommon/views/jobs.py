@@ -12,16 +12,16 @@ from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.decorators import admin_or_system_admin_required
-from bilbycommon.utility.job import BilbyJob
-from bilbycommon.utility.constants import JOBS_PER_PAGE
 from bilbycommon.utility.display_names import (
     DRAFT,
     PUBLIC,
     NONE,
-    BAYESIAN,
-    GRAVITATIONAL,
+    PARAMETER_ESTIMATION,
+    CONTINUOUS_WAVE,
 )
+from bilbycommon.utility.job import BilbyJob
 from bilbycommon.utility.utils import get_readable_size
+from bilbycommon.utility.constants import JOBS_PER_PAGE
 from ..models import JobCommon, JobStatus
 
 logger = logging.getLogger(__name__)
@@ -342,7 +342,7 @@ def view_job(request, job_id):
     job = None
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -429,7 +429,7 @@ def copy_job(request, job_id):
     job = None
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -461,10 +461,10 @@ def copy_job(request, job_id):
         # loading job as draft and redirecting to the new job view
         request.session['to_load'] = job.as_json()
 
-    if job and job.job_type == BAYESIAN:
-        return redirect('new_b_job')
-    elif job and job.job_type == GRAVITATIONAL:
-        return redirect('new_g_job')
+    if job and job.job_type == PARAMETER_ESTIMATION:
+        return redirect('new_pe_job')
+    elif job and job.job_type == CONTINUOUS_WAVE:
+        return redirect('new_cw_job')
     else:
         return redirect('/')
 
@@ -481,7 +481,7 @@ def edit_job(request, job_id):
     job = None
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -505,10 +505,10 @@ def edit_job(request, job_id):
         # loading job as draft and redirecting to the new job view
         request.session['to_load'] = job.as_json()
 
-    if job and job.job_type == BAYESIAN:
-        return redirect('new_b_job')
-    elif job and job.job_type == GRAVITATIONAL:
-        return redirect('new_g_job')
+    if job and job.job_type == PARAMETER_ESTIMATION:
+        return redirect('new_pe_job')
+    elif job and job.job_type == CONTINUOUS_WAVE:
+        return redirect('new_cw_job')
     else:
         return redirect('/')
 
@@ -529,7 +529,7 @@ def cancel_job(request, job_id):
     to_page = 'jobs'
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -590,7 +590,7 @@ def delete_job(request, job_id):
     to_page = 'drafts'
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -603,7 +603,7 @@ def delete_job(request, job_id):
                 should_redirect = False
             else:
 
-                message = 'BilbyBJob <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
+                message = 'BilbyPEJob <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
 
                 if job.status == DRAFT:
 
@@ -675,7 +675,7 @@ def make_job_private(request, job_id):
     should_redirect = False
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -689,7 +689,7 @@ def make_job_private(request, job_id):
                 job.save()
 
                 should_redirect = True
-                messages.success(request, 'BilbyBJob has been changed to <strong>private!</strong>', extra_tags='safe')
+                messages.success(request, 'BilbyPEJob has been changed to <strong>private!</strong>', extra_tags='safe')
 
         except JobCommon.DoesNotExist:
             pass
@@ -722,7 +722,7 @@ def make_job_public(request, job_id):
     should_redirect = False
 
     # checking:
-    # 1. BilbyBJob ID and job exists
+    # 1. BilbyPEJob ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -736,7 +736,7 @@ def make_job_public(request, job_id):
                 job.save()
 
                 should_redirect = True
-                messages.success(request, 'BilbyBJob has been changed to <strong>public!</strong>', extra_tags='safe')
+                messages.success(request, 'BilbyPEJob has been changed to <strong>public!</strong>', extra_tags='safe')
 
         except JobCommon.DoesNotExist:
             pass

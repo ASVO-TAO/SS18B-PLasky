@@ -7,7 +7,7 @@ from .utility.display_names import *
 
 class JobCommon(HpcJob):
     """
-    BilbyBJob model extending HpcJob
+    Job model extending HpcJob
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_job', on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=False, null=False)
@@ -24,11 +24,11 @@ class JobCommon(HpcJob):
     json_representation = models.TextField(null=True, blank=True)
 
     JOB_TYPES = [
-        (BAYESIAN, BAYESIAN_DISPLAY),
-        (GRAVITATIONAL, GRAVITATIONAL_DISPLAY),
+        (PARAMETER_ESTIMATION, PARAMETER_ESTIMATION_DISPLAY),
+        (CONTINUOUS_WAVE, CONTINUOUS_WAVE_DISPLAY),
     ]
 
-    job_type = models.CharField(max_length=20, choices=JOB_TYPES, blank=False, default=BAYESIAN)
+    job_type = models.CharField(max_length=20, choices=JOB_TYPES, blank=False, default=PARAMETER_ESTIMATION)
 
     @property
     def status_display(self):
@@ -63,13 +63,13 @@ class JobCommon(HpcJob):
         raise NotImplemented
 
     def get_actual_job(self):
-        from bilbyweb.models import BilbyBJob
-        from bilbygw.models import BilbyGJob
+        from bilbyweb.models import BilbyPEJob
+        from bilbycw.models import BilbyCWJob
 
-        if self.job_type == BAYESIAN:
-            job = BilbyBJob.objects.get(id=self.id)
-        elif self.job_type == GRAVITATIONAL:
-            job = BilbyGJob.objects.get(id=self.id)
+        if self.job_type == PARAMETER_ESTIMATION:
+            job = BilbyPEJob.objects.get(id=self.id)
+        elif self.job_type == CONTINUOUS_WAVE:
+            job = BilbyCWJob.objects.get(id=self.id)
         else:
             job = None
 
