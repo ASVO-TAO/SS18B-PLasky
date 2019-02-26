@@ -15,6 +15,7 @@ from bilbycommon.utility.validators import (
 )
 
 # field types
+INTEGER = 'integer'
 POSITIVE_INTEGER = 'positive-integer'
 TEXT = 'text'
 FLOAT = 'float'
@@ -250,6 +251,25 @@ class CustomIntegerField(forms.IntegerField):
 
         self.widget = forms.TextInput()
         self.widget.attrs.update(extra_attrs)
+
+
+def get_integer_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom positive integer field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom positive integer field accepts inputs greater than zero
+    """
+    return CustomIntegerField(
+        label=label,
+        required=required,
+        initial=initial,
+        placeholder=placeholder,
+        validators=validators,
+    )
 
 
 def get_positive_integer_input(label, required, placeholder=None, initial=None, validators=()):

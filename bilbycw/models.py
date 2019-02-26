@@ -6,7 +6,7 @@ from bilbycommon.utility.display_names import *
 
 class BilbyCWJob(JobCommon):
     """
-    BilbyBJob model extending HpcJob
+    BilbyCWJob model extending HpcJob
     """
 
     @property
@@ -37,7 +37,7 @@ class BilbyCWJob(JobCommon):
     def bilby_job(self):
         """
         Creates a LIGHT bilby job instance usually for list actions
-        :return: Bilby BilbyBJob instance
+        :return: BilbyCW Job instance
         """
         from bilbycommon.utility.job import BilbyJob
         return BilbyJob(job_id=self.pk, light=True)
@@ -70,7 +70,7 @@ class DataSource(models.Model):
     """
     Model to store Data Source Information
     """
-    job = models.ForeignKey(JobCommon, on_delete=models.CASCADE, related_name='g_job_data_source')
+    job = models.ForeignKey(JobCommon, on_delete=models.CASCADE, related_name='cw_job_data_source')
 
     DATA_SOURCES = [
         (REAL_DATA, REAL_DATA_DISPLAY),
@@ -90,3 +90,28 @@ class DataSource(models.Model):
                 choice=self.data_source,
             ),
         )
+
+
+class DataParameter(models.Model):
+    """
+    Model to Store Data Parameters.
+    Serves for Real and Simulated Data parameters.
+    """
+    data_source = models.ForeignKey(DataSource, on_delete=models.CASCADE)
+    name = models.CharField(max_length=20, blank=False, null=False)
+    value = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return '{} - {} ({})'.format(self.name, self.value, self.data_source)
+
+
+class SearchParameter(models.Model):
+    """
+    Model to Store Search Parameters.
+    """
+    job = models.ForeignKey(BilbyCWJob, on_delete=models.CASCADE)
+    name = models.CharField(max_length=20, blank=False, null=False)
+    value = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return '{} - {} ({})'.format(self.name, self.value, self.job)

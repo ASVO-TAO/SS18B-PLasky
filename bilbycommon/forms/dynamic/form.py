@@ -9,6 +9,7 @@ from .field import (
     get_text_area_input,
     get_select_input,
     get_checkbox_input,
+    get_integer_input,
     get_positive_integer_input,
     get_multiple_choices_input,
     get_positive_float_input,
@@ -16,6 +17,7 @@ from .field import (
     get_zero_to_pi_input,
     get_zero_to_2pi_input,
     get_float_input,
+    INTEGER,
     POSITIVE_INTEGER,
     FLOAT,
     POSITIVE_FLOAT,
@@ -101,6 +103,16 @@ class DynamicForm(forms.Form):
                     initial=properties.get('initial', None),
                     required=properties.get('required', False),
                     validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == INTEGER:
+                self.fields[name] = get_integer_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+
                 )
 
             elif properties.get('type') == POSITIVE_INTEGER:

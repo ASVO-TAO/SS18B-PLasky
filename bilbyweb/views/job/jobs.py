@@ -311,7 +311,7 @@ def delete_job(request, job_id):
                 should_redirect = False
             else:
 
-                message = 'BilbyPEJob <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
+                message = 'Bilby Job <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
 
                 if job.status == DRAFT:
 
@@ -397,7 +397,7 @@ def make_job_private(request, job_id):
                 job.save()
 
                 should_redirect = True
-                messages.success(request, 'BilbyPEJob has been changed to <strong>private!</strong>', extra_tags='safe')
+                messages.success(request, 'Bilby Job has been changed to <strong>private!</strong>', extra_tags='safe')
 
         except BilbyPEJob.DoesNotExist:
             pass
@@ -444,7 +444,7 @@ def make_job_public(request, job_id):
                 job.save()
 
                 should_redirect = True
-                messages.success(request, 'BilbyPEJob has been changed to <strong>public!</strong>', extra_tags='safe')
+                messages.success(request, 'Bilby Job has been changed to <strong>public!</strong>', extra_tags='safe')
 
         except BilbyPEJob.DoesNotExist:
             pass

@@ -5,12 +5,13 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from bilbycommon.utility.display_names import SKIP
 from bilbycommon.utility.job import BilbyJob
 from bilbycommon.utility.utils import get_enabled_tabs
 from bilbycw.utility.constants import (
     START,
     DATA_SOURCE,
+    DATA_PARAMETER_REAL,
+    DATA_PARAMETER_SIMULATED,
     LAUNCH,
     MODELS,
     FORMS_NEW,
@@ -269,6 +270,8 @@ def new_job(request):
 
             'start_form': forms[START],
             'data_source_form': forms[DATA_SOURCE],
+            'data_parameter_real_form': forms[DATA_PARAMETER_REAL],
+            'data_parameter_simulated_form': forms[DATA_PARAMETER_SIMULATED],
             'submit_form': forms[LAUNCH],
 
             # job so far...

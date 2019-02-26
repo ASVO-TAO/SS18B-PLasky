@@ -74,7 +74,7 @@ class Data(models.Model):
     """
     Model to store Data Information
     """
-    job = models.ForeignKey(JobCommon, on_delete=models.CASCADE, related_name='b_job_data')
+    job = models.ForeignKey(JobCommon, on_delete=models.CASCADE, related_name='pe_job_data')
 
     DATA_CHOICES = [
         (SIMULATED_DATA, SIMULATED_DATA_DISPLAY),

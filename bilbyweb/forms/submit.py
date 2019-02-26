@@ -41,7 +41,7 @@ class SubmitJobForm(DynamicForm):
         self.full_clean()
         data = self.cleaned_data
 
-        # the json representation of the job is to be saved in the BilbyBJob model
+        # the json representation of the job is to be saved in the Bilby Job model
         self.job.json_representation = data.get('json_representation')
 
         # Submit the job to HPC

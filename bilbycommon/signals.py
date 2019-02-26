@@ -19,8 +19,8 @@ from .utility.email.email import email_notification_job_done
 @receiver(pre_save, sender=JobCommon, dispatch_uid='update_last_updated')
 def update_last_updated(instance, **kwargs):
     """
-    Signal to update the last updated for the BilbyBJob
-    :param instance: instance of BilbyBJob
+    Signal to update the last updated for the Bilby Job
+    :param instance: instance of Bilby Job
     :param kwargs: keyward arguments
     :return: Nothing
     """
@@ -31,8 +31,8 @@ def update_last_updated(instance, **kwargs):
 @receiver(pre_save, sender=JobCommon, dispatch_uid='notify_job_owner')
 def notify_job_owner(instance, **kwargs):
     """
-    Signal to send email notification on BilbyBJob finished processing
-    :param instance: instance of BilbyBJob
+    Signal to send email notification on Bilby Job finished processing
+    :param instance: instance of Bilby Job
     :param kwargs: keyward arguments
     :return: Nothing
     """

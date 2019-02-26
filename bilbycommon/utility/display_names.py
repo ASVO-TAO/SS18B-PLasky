@@ -244,3 +244,66 @@ DISPLAY_NAME_MAP.update({
     FAKE_DATA: FAKE_DATA_DISPLAY,
     REAL_DATA: REAL_DATA_DISPLAY,
 })
+
+# REAL Data Parameters
+
+GLOB = 'glob'
+GLOB_DISPLAY = 'glob'
+START_TIME_CW = 'starttime'
+START_TIME_CW_DISPLAY = 'Start Time'
+DURATION = 'duration'
+DURATION_DISPLAY = 'Duration'
+
+# GLOB Choices
+
+O1 = 'O1'
+O1_DISPLAY = 'O1'
+O2 = 'O2'
+O2_DISPLAY = 'O2'
+
+DISPLAY_NAME_MAP.update({
+    GLOB: GLOB_DISPLAY,
+    START_TIME_CW: START_TIME_CW_DISPLAY,
+    DURATION: DURATION_DISPLAY,
+})
+
+# FAKE Data Parameters
+
+H0 = 'h0'
+H0_DISPLAY = 'h0'
+A0 = 'a0'
+A0_DISPLAY = 'a0'
+ORBIT_TP = 'orbitTp'
+ORBIT_TP_DISPLAY = 'orbitTp'
+SIGNAL_FREQUENCY = 'signalfreq'
+SIGNAL_FREQUENCY_DISPLAY = 'Signal Frequency'
+# PSI , PSI_DISPAY are already there
+COSI = 'cosi'
+COSI_DISPLAY = 'cosi'
+ALPHA = 'alpha'
+ALPHA_DISPLAY = 'alpha'
+DELTA = 'delta'
+DELTA_DISPLAY = 'delta'
+ORBIT_P = 'orbitP'
+ORBIT_P_DISPLAY = 'orbitP'
+RAND_SEED = 'randseed'
+RAND_SEED_DISPLAY = 'randseed'
+IFO = 'ifo'
+IFO_DISPLAY = 'ifo'
+NOISE_LEVEL = 'noiselevel'
+NOISE_LEVEL_DISPLAY = 'Noise Level'
+
+DISPLAY_NAME_MAP.update({
+    H0: H0_DISPLAY,
+    A0: A0_DISPLAY,
+    ORBIT_TP: ORBIT_TP_DISPLAY,
+    SIGNAL_FREQUENCY: SIGNAL_FREQUENCY_DISPLAY,
+    COSI: COSI_DISPLAY,
+    ALPHA: ALPHA_DISPLAY,
+    DELTA: DELTA_DISPLAY,
+    ORBIT_P: ORBIT_P_DISPLAY,
+    RAND_SEED: RAND_SEED_DISPLAY,
+    IFO: IFO_DISPLAY,
+    NOISE_LEVEL: NOISE_LEVEL_DISPLAY,
+})
+
