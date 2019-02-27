@@ -2,16 +2,6 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
-from bilbyweb.utility.constants import (
-    START,
-    DATA,
-    SIGNAL,
-    PRIOR,
-    SAMPLER,
-    LAUNCH,
-)
-
-
 # Units of file size
 B = 'B'
 KB = 'KB'
@@ -54,58 +44,32 @@ def get_readable_size(size, unit=B):
         return ' '.join([str(round(size / 1, 2)), unit])
 
 
-def get_enabled_tabs(bilby_job, active_tab):
+def get_to_be_active_tab(tabs, tabs_indexes, active_tab, previous=False):
     """
-    Calculates and finds which tabs should be enabled in the UI
-    :param bilby_job: Bilby job instance for which the tabs will be calculated
-    :param active_tab: Currently active tab
-    :return: list of enabled tabs
+    Finds out the next active tab based on user input
+    :param tabs: Tabs that shows up in the UI
+    :param tabs_indexes: indexed tabs to show them in order
+    :param active_tab: Current active tab
+    :param previous: Whether or not previous is pressed
+    :return: To be Active tab, Whether it is the last tab or not
     """
 
-    # for any bilby job at least First Two tabs should be enabled
-    # because, Start tab must have been submitted before a BilbyPEJob is created
-    # and as a result the user should be able to see Data Tab
-    enabled_tabs = [START, DATA]
+    # keep track of out of index tab, beneficial to detect the last tab
+    no_more_tabs = False
 
-    # if nothing has been saved yet, that means, no form has been submitted yet,
-    # the user should see only the Start Tab.
-    if not bilby_job:
-        return enabled_tabs[:1]
+    # find the current active tab index
+    active_tab_index = tabs_indexes.get(active_tab)
 
-    # if data has been entered for it
-    # enable Data and Signal Tabs
-    if bilby_job.data:
-        if DATA not in enabled_tabs:
-            enabled_tabs.append(DATA)
-        if SIGNAL not in enabled_tabs:
-            enabled_tabs.append(SIGNAL)
+    # next active tab index based on the button pressed
+    if previous:
+        active_tab_index -= 1
+    else:
+        active_tab_index += 1
 
-    # if signal has been entered for it
-    # enable Signal and Prior Tabs
-    if bilby_job.signal:
-        if SIGNAL not in enabled_tabs:
-            enabled_tabs.append(SIGNAL)
-        if PRIOR not in enabled_tabs:
-            enabled_tabs.append(PRIOR)
+    # checks out the last tab or not
+    try:
+        active_tab = tabs[active_tab_index]
+    except IndexError:
+        no_more_tabs = True
 
-    # if priors has been entered for it
-    # enable Prior and Sampler Tabs
-    if bilby_job.priors:
-        if PRIOR not in enabled_tabs:
-            enabled_tabs.append(PRIOR)
-        if SAMPLER not in enabled_tabs:
-            enabled_tabs.append(SAMPLER)
-
-    # if sampler has been entered for it
-    # enable Sampler and Launch Tabs
-    if bilby_job.sampler:
-        if SAMPLER not in enabled_tabs:
-            enabled_tabs.append(SAMPLER)
-        if LAUNCH not in enabled_tabs:
-            enabled_tabs.append(LAUNCH)
-
-    # always make sure to include the active tab
-    if active_tab not in enabled_tabs:
-        enabled_tabs.append(active_tab)
-
-    return enabled_tabs
+    return active_tab, no_more_tabs

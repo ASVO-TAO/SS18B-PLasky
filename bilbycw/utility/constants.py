@@ -23,10 +23,11 @@ DATA_SOURCE = 'data-source'
 DATA_PARAMETER = 'data-parameter'
 DATA_PARAMETER_REAL = 'data-parameter-real'
 DATA_PARAMETER_SIMULATED = 'data-parameter-simulated'
+SEARCH_PARAMETER = 'search-parameter'
 LAUNCH = 'launch'
 
 
-# Number of TABs to show up in the UI. We currently have 6 TABs
+# Number of TABs to show up in the UI. We currently have 4 TABs
 TABS = [
     START,
     DATA_SOURCE,

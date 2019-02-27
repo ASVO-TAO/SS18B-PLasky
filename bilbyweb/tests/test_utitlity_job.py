@@ -6,12 +6,12 @@ from django.test import (
     TestCase,
 )
 
-from bilbycommon.utility.job import BilbyJob
+from bilbyweb.utility.job import PEJob
 from .utility import TestData, get_members
 from ..models import BilbyPEJob
 
 
-class TestBilbyJob(TestCase):
+class TestPEJob(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.data = TestData()
@@ -24,7 +24,7 @@ class TestBilbyJob(TestCase):
             description='a job description',
         )
 
-        b_job = BilbyJob(job_id=job.id)
+        b_job = PEJob(job_id=job.id)
         self.assertNotEquals(b_job, None)
         self.assertEquals(b_job.job, job)
 
@@ -35,5 +35,5 @@ class TestBilbyJob(TestCase):
             description='a job description',
         )
 
-        b_job = BilbyJob(job_id=-1)
+        b_job = PEJob(job_id=-1)
         self.assertEquals(b_job, None)

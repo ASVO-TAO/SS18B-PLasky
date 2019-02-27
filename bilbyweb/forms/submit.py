@@ -6,9 +6,9 @@ import logging
 
 from collections import OrderedDict
 
-from bilbycommon.utility.job import BilbyJob
 from bilbycommon.forms.dynamic import field
 from bilbycommon.forms.dynamic.form import DynamicForm
+from ..utility.job import PEJob
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class SubmitJobForm(DynamicForm):
         :return: Nothing
         """
         if job:
-            bilby_job = BilbyJob(job_id=job.id)
+            bilby_job = PEJob(job_id=job.id)
 
             # as currently it is the only field, we are not using a loop like other forms
             self.fields['json_representation'].initial = bilby_job.as_json()

@@ -5,7 +5,7 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 import json
 import uuid
 
-from ..utility.display_names import (
+from bilbycommon.utility.display_names import (
     OPEN_DATA,
     SIMULATED_DATA,
     BINARY_BLACK_HOLE,
@@ -28,7 +28,7 @@ from ..utility.display_names import (
     PUBLIC,
 )
 
-from bilbyweb.models import (
+from ..models import (
     BilbyPEJob,
     Data,
     Signal,
@@ -39,12 +39,12 @@ from bilbyweb.models import (
     SamplerParameter,
 )
 
-from bilbyweb.forms.signal.signal_parameter import BBH_FIELDS_PROPERTIES
-from bilbyweb.forms.data.data_open import DATA_FIELDS_PROPERTIES as OPEN_DATA_FIELDS_PROPERTIES
-from bilbyweb.forms.data.data_simulated import DATA_FIELDS_PROPERTIES as SIMULATED_DATA_FIELDS_PROPERTIES
-from bilbyweb.forms.sampler.sampler_dynesty import DYNESTY_FIELDS_PROPERTIES
-from bilbyweb.forms.sampler.sampler_nestle import NESTLE_FIELDS_PROPERTIES
-from bilbyweb.forms.sampler.sampler_emcee import EMCEE_FIELDS_PROPERTIES
+from ..forms.signal.signal_parameter import BBH_FIELDS_PROPERTIES
+from ..forms.data.data_open import DATA_FIELDS_PROPERTIES as OPEN_DATA_FIELDS_PROPERTIES
+from ..forms.data.data_simulated import DATA_FIELDS_PROPERTIES as SIMULATED_DATA_FIELDS_PROPERTIES
+from ..forms.sampler.sampler_dynesty import DYNESTY_FIELDS_PROPERTIES
+from ..forms.sampler.sampler_nestle import NESTLE_FIELDS_PROPERTIES
+from ..forms.sampler.sampler_emcee import EMCEE_FIELDS_PROPERTIES
 
 
 def clone_job_data(from_job, to_job):
@@ -128,9 +128,9 @@ def clone_job_data(from_job, to_job):
             )
 
 
-class BilbyJob(object):
+class PEJob(object):
     """
-    Class representing a Bilby BilbyPEJob. The bilby job parameters are scattered in different models in the database.
+    Class representing a BilbyPEJob. The bilby job parameters are scattered in different models in the database.
     This class used to collects the correct job parameters in one place. It also defines the json representation
     of the job.
     """
@@ -320,7 +320,7 @@ class BilbyJob(object):
         :return: Instance of Bilby BilbyPEJob with job variable initialised from job_id if exists
                  otherwise returns None
         """
-        result = super(BilbyJob, cls).__new__(cls)
+        result = super(PEJob, cls).__new__(cls)
         try:
             result.job = BilbyPEJob.objects.get(id=kwargs.get('job_id', None))
         except BilbyPEJob.DoesNotExist:

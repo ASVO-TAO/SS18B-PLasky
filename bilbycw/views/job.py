@@ -5,13 +5,14 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-from bilbycommon.utility.job import BilbyJob
-from bilbycommon.utility.utils import get_enabled_tabs
+from bilbycommon.utility.utils import get_to_be_active_tab
 from bilbycw.utility.constants import (
     START,
     DATA_SOURCE,
+    DATA_PARAMETER,
     DATA_PARAMETER_REAL,
     DATA_PARAMETER_SIMULATED,
+    SEARCH_PARAMETER,
     LAUNCH,
     MODELS,
     FORMS_NEW,
@@ -19,38 +20,51 @@ from bilbycw.utility.constants import (
     TABS,
     TABS_INDEXES,
 )
+from ..utility.job import CWJob
 from ..models import (
     BilbyCWJob,
 )
 
 
-def get_to_be_active_tab(active_tab, previous=False):
+def get_enabled_tabs(bilby_job, active_tab):
     """
-    Finds out the next active tab based on user input
-    :param active_tab: Current active tab
-    :param previous: Whether or not previous is pressed
-    :return: To be Active tab, Whether it is the last tab or not
+    Calculates and finds which tabs should be enabled in the UI
+    :param bilby_job: Bilby job instance for which the tabs will be calculated
+    :param active_tab: Currently active tab
+    :return: list of enabled tabs
     """
 
-    # keep track of out of index tab, beneficial to detect the last tab
-    no_more_tabs = False
+    # for any bilby job at least First Two tabs should be enabled
+    # because, Start tab must have been submitted before a BilbyPEJob is created
+    # and as a result the user should be able to see Data Tab
+    enabled_tabs = [START, DATA_PARAMETER, ]
 
-    # find the current active tab index
-    active_tab_index = TABS_INDEXES.get(active_tab)
+    # if nothing has been saved yet, that means, no form has been submitted yet,
+    # the user should see only the Start Tab.
+    if not bilby_job:
+        return enabled_tabs[:1]
 
-    # next active tab index based on the button pressed
-    if previous:
-        active_tab_index -= 1
-    else:
-        active_tab_index += 1
+    # if data parameters have been entered for it
+    # enable Data Parameters and Search Parameter Tabs
+    if bilby_job.data_parameters:
+        if DATA_PARAMETER not in enabled_tabs:
+            enabled_tabs.append(DATA_PARAMETER)
+        if SEARCH_PARAMETER not in enabled_tabs:
+            enabled_tabs.append(SEARCH_PARAMETER)
 
-    # checks out the last tab or not
-    try:
-        active_tab = TABS[active_tab_index]
-    except IndexError:
-        no_more_tabs = True
+    # if search parameters have been entered for it
+    # enable Search Parameters and Launch Tabs
+    if bilby_job.search_parameters:
+        if SEARCH_PARAMETER not in enabled_tabs:
+            enabled_tabs.append(SEARCH_PARAMETER)
+        if LAUNCH not in enabled_tabs:
+            enabled_tabs.append(LAUNCH)
 
-    return active_tab, no_more_tabs
+    # always make sure to include the active tab
+    if active_tab not in enabled_tabs:
+        enabled_tabs.append(active_tab)
+
+    return enabled_tabs
 
 
 def generate_forms(job=None, forms=None):
@@ -191,7 +205,7 @@ def save_tab(request, active_tab):
             job.save()
 
         # get the active tab
-        active_tab, submitted = get_to_be_active_tab(active_tab, previous=previous)
+        active_tab, submitted = get_to_be_active_tab(TABS, TABS_INDEXES, active_tab, previous=previous)
 
     # don't process further for submitted jobs
     if not submitted:
@@ -252,7 +266,7 @@ def new_job(request):
 
     # Create a bilby job for this job
     try:
-        bilby_job = BilbyJob(job_id=request.session['draft_job'].get('id', None))
+        bilby_job = CWJob(job_id=request.session['draft_job'].get('id', None))
     except (KeyError, AttributeError):
         bilby_job = None
 

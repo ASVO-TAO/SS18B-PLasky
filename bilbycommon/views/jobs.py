@@ -12,6 +12,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.decorators import admin_or_system_admin_required
+from bilbycommon.utility.constants import JOBS_PER_PAGE
 from bilbycommon.utility.display_names import (
     DRAFT,
     PUBLIC,
@@ -19,9 +20,8 @@ from bilbycommon.utility.display_names import (
     PARAMETER_ESTIMATION,
     CONTINUOUS_WAVE,
 )
-from bilbycommon.utility.job import BilbyJob
 from bilbycommon.utility.utils import get_readable_size
-from bilbycommon.utility.constants import JOBS_PER_PAGE
+from bilbyweb.utility.job import PEJob
 from ..models import JobCommon, JobStatus
 
 logger = logging.getLogger(__name__)
@@ -357,7 +357,7 @@ def view_job(request, job_id):
                 job = None
             else:
                 # create a bilby_job instance of the job
-                bilby_job = BilbyJob(job_id=job.id)
+                bilby_job = PEJob(job_id=job.id)
                 bilby_job.list_actions(request.user)
 
                 # Empty parameter dict to pass to template
@@ -443,7 +443,7 @@ def copy_job(request, job_id):
                 job = None
             else:
                 # create a bilby_job instance of the job
-                bilby_job = BilbyJob(job_id=job.id)
+                bilby_job = PEJob(job_id=job.id)
                 job = bilby_job.clone_as_draft(request.user)
                 if not job:
                     logger.info('Cannot copy job due to name length, job id: {}'.format(bilby_job.job.id))
