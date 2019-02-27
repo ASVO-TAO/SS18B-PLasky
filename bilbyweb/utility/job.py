@@ -15,18 +15,8 @@ from bilbycommon.utility.display_names import (
     FIXED,
     UNIFORM,
     SKIP,
-    SUBMITTED,
-    QUEUED,
-    IN_PROGRESS,
-    DRAFT,
-    COMPLETED,
-    PENDING,
-    ERROR,
-    CANCELLED,
-    WALL_TIME_EXCEEDED,
-    OUT_OF_MEMORY,
-    PUBLIC,
 )
+from bilbycommon.utility.utils import list_job_actions
 
 from ..models import (
     BilbyPEJob,
@@ -197,47 +187,7 @@ class PEJob(object):
         return cloned
 
     def list_actions(self, user):
-        """
-        List the actions a user can perform on this BilbyPEJob
-        :param user: User for whom the actions will be generated
-        :return: Nothing
-        """
-
-        self.job_actions = []
-
-        # BilbyPEJob Owners and Admins get most actions
-        if self.job.user == user or user.is_admin():
-
-            # any job can be copied
-            self.job_actions.append('copy')
-
-            # job can only be deleted if in the following status:
-            # 1. draft
-            # 2. completed
-            # 3. error (wall time and out of memory)
-            # 4. cancelled
-            # 5. public
-            if self.job.status in [DRAFT, COMPLETED, ERROR, CANCELLED, WALL_TIME_EXCEEDED, OUT_OF_MEMORY, PUBLIC]:
-                self.job_actions.append('delete')
-
-            # edit a job if it is a draft
-            if self.job.status in [DRAFT]:
-                self.job_actions.append('edit')
-
-            # cancel a job if it is not finished processing
-            if self.job.status in [PENDING, SUBMITTED, QUEUED, IN_PROGRESS]:
-                self.job_actions.append('cancel')
-
-            # completed job can be public and vice versa
-            if self.job.status in [COMPLETED]:
-                self.job_actions.append('make_it_public')
-            elif self.job.status in [PUBLIC]:
-                self.job_actions.append('make_it_private')
-
-        else:
-            # non admin and non owner can copy a PUBLIC job
-            if self.job.status in [PUBLIC]:
-                self.job_actions.append('copy')
+        self.job_actions = list_job_actions(self.job, user)
 
     def __init__(self, job_id, light=False):
         """
