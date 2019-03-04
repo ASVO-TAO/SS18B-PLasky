@@ -2,6 +2,10 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
+import uuid
+
+from ..models import JobCommon
+
 from .display_names import (
     SUBMITTED,
     QUEUED,
@@ -92,6 +96,7 @@ def get_to_be_active_tab(tabs, tabs_indexes, active_tab, previous=False):
 def list_job_actions(job, user):
     """
     List the actions a user can perform on this Bilby Job
+    :param job: A Bilby Job instance
     :param user: User for whom the actions will be generated
     :return: Nothing
     """
@@ -133,3 +138,21 @@ def list_job_actions(job, user):
             job_actions.append('copy')
 
     return job_actions
+
+
+def generate_draft_job_name(job, user):
+
+    if not job:
+        return None
+
+    # try to generate a unique name for the job owner
+    name = job.name
+    while JobCommon.objects.filter(user=user, name=name).exists():
+        name = (job.name + '_' + uuid.uuid4().hex)[:255]
+
+        # This will be true if the job has 255 Characters in it,
+        # In this case, we cannot get a new name by adding something to it.
+        # This can be altered later based on the requirement.
+        if name == job.name:
+            # cannot generate a new name, returning none
+            return None

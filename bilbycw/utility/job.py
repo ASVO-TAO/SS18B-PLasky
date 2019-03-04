@@ -3,13 +3,15 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
 import json
-import uuid
 
 from bilbycommon.utility.display_names import (
     REAL_DATA,
     SIMULATED_DATA,
 )
-from bilbycommon.utility.utils import list_job_actions
+from bilbycommon.utility.utils import (
+    list_job_actions,
+    generate_draft_job_name,
+)
 
 from ..models import (
     BilbyCWJob,
@@ -79,20 +81,10 @@ class CWJob(object):
         :return: Nothing
         """
 
-        if not self.job:
-            return
+        name = generate_draft_job_name(self.job, user)
 
-        # try to generate a unique name for the job owner
-        name = self.job.name
-        while BilbyCWJob.objects.filter(user=user, name=name).exists():
-            name = (self.job.name + '_' + uuid.uuid4().hex)[:255]
-
-            # This will be true if the job has 255 Characters in it,
-            # In this case, we cannot get a new name by adding something to it.
-            # This can be altered later based on the requirement.
-            if name == self.job.name:
-                # cannot generate a new name, returning none
-                return None
+        if not name:
+            return None
 
         # Once the name is set, creating the draft job with new name and owner and same description
         cloned = BilbyCWJob.objects.create(
