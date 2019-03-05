@@ -82,4 +82,3 @@ class StartJobForm(forms.ModelForm):
         )
 
         self.request.session['draft_job'] = job_created.as_json()
-

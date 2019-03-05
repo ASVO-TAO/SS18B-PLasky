@@ -194,13 +194,28 @@ def save_tab(request, active_tab):
         # save the forms
         for form_to_save in forms_to_save:
             if not (previous and form_to_save == LAUNCH):
+                # before saving, just check whether a corresponding job has been created and in that case
+                # update the form
+                forms[form_to_save] = FORMS_NEW[form_to_save](request.POST, request=request, job=job,
+                                                              prefix=form_to_save)
+                # then save the form
                 forms[form_to_save].save()
+
+            # checking if the job is created in the form, this will happen only for the start tab where
+            # upon saving the start form a draft job will be created and
+            # the draft job is needed to save the other forms
+            # to achieve this, we need to reconstruct the forms with the job information
+            if not job and request.session['draft_job']:
+                try:
+                    job = BilbyCWJob.objects.get(id=request.session['draft_job'].get('id', None))
+                except (KeyError, AttributeError, BilbyCWJob.DoesNotExist):
+                    job = None
 
         # update the job
         if job:
             job.refresh_from_db()
             # saving the job here again will call signal to update the last updated
-            # it is left to the signal because of potential change of BilbyPEJob model to
+            # it is left to the signal because of potential change of BilbyCWJob model to
             # extend the HpcJob model.
             job.save()
 

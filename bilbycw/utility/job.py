@@ -158,7 +158,7 @@ class CWJob(object):
         data_source_dict = dict()
         if self.data_source:
             data_source_dict.update({
-                'type': self.data_source,
+                'type': self.data_source.data_source,
             })
             for data_parameter in self.data_parameters:
                 data_source_dict.update({
