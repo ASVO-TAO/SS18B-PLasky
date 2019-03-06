@@ -39,8 +39,8 @@ class BilbyCWJob(JobCommon):
         Creates a LIGHT bilby job instance usually for list actions
         :return: BilbyCW Job instance
         """
-        from bilbyweb.utility.job import PEJob
-        return PEJob(job_id=self.pk, light=True)
+        from .utility.job import CWJob
+        return CWJob(job_id=self.pk, light=True)
 
     def save(self, *args, **kwargs):
         """

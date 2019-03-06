@@ -24,6 +24,7 @@
                 <th scope="col">Name</th>
                 <th>{% if drafts %}Creation{% else %}Launch{% endif %} Time</th>
                 <th>Last Updated</th>
+                <th>Job Type</th>
                 {% if not drafts and not public and not deleted %}
                     <th>Status</th>{% endif %}
                 {% if public or admin_view %}
@@ -39,6 +40,7 @@
                     <td>{% if drafts %}{{ bilby_job.job.creation_time }}{% else %}
                         {{ bilby_job.job.job_pending_time }}{% endif %}</td>
                     <td>{{ bilby_job.job.last_updated }}</td>
+                    <td>{{ bilby_job.job.job_type | display_name }}</td>
                     {% if not drafts and not public and not deleted %}
                         <td>{{ bilby_job.job.status_display }}</td>{% endif %}
                     {% if public or admin_view %}
