@@ -17,6 +17,12 @@ from bilbycommon.utility.display_names import (
     O1_DISPLAY,
     O2,
     O2_DISPLAY,
+    REAL_DATA,
+)
+
+from ...models import (
+    DataSource,
+    DataParameter,
 )
 
 GLOB_CHOICES = [
@@ -40,7 +46,7 @@ FIELDS_PROPERTIES = OrderedDict([
         'required': True,
     }),
     (DURATION, {
-        'type': field.INTEGER,
+        'type': field.DURATION,
         'label': DURATION_DISPLAY,
         'placeholder': '5/10m/2h/30d',
         'initial': None,
@@ -62,3 +68,47 @@ class DataParameterRealForm(DynamicForm):
         self.job = kwargs.pop('job', None)
 
         super(DataParameterRealForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        # find the data source first
+        data_source = DataSource.objects.get(job=self.job)
+
+        # Create or update the data parameters
+        for name, value in self.cleaned_data.items():
+            DataParameter.objects.update_or_create(
+                data_source=data_source,
+                name=name,
+                defaults={
+                    'value': value,
+                }
+            )
+
+    def update_from_database(self, job):
+        """
+        Populates the form field with the values stored in the database
+        :param job: instance of job model for which the data parameters belong to
+        :return: Nothing
+        """
+
+        if not job:
+            return
+        else:
+
+            # check whether the data source is real data or not
+            # if not nothing to populate
+            try:
+                data_source = DataSource.objects.get(job=job)
+                if data_source.data_source != REAL_DATA:
+                    return
+            except DataSource.DoesNotExist:
+                return
+
+        # iterate over the fields
+        for name in FIELDS_PROPERTIES.keys():
+            try:
+                value = DataParameter.objects.get(data_source=data_source, name=name).value
+                # set the field value
+                self.fields[name].initial = value
+
+            except DataParameter.DoesNotExist:
+                continue

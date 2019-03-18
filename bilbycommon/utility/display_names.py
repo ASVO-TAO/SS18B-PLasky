@@ -309,3 +309,23 @@ DISPLAY_NAME_MAP.update({
     NOISE_LEVEL: NOISE_LEVEL_DISPLAY,
 })
 
+
+# Search Parameters
+
+FREQUENCY = 'freq'
+FREQUENCY_DISPLAY = 'Frequency'
+BAND = 'band'
+BAND_DISPLAY = 'Band'
+# a0, orbitTp, alpha, delta, orbitP already present
+
+# a0 choices
+# fixed is already there
+RANGE = 'range'
+RANGE_DISPLAY = 'Range'
+
+
+DISPLAY_NAME_MAP.update({
+    FREQUENCY: FREQUENCY_DISPLAY,
+    BAND: BAND_DISPLAY,
+    RANGE: RANGE_DISPLAY,
+})

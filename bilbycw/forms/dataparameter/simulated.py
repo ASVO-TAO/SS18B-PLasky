@@ -2,6 +2,8 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
+import random
+
 from collections import OrderedDict
 
 from bilbycommon.forms.dynamic.form import DynamicForm
@@ -39,6 +41,11 @@ from bilbycommon.utility.display_names import (
     HANFORD_DISPLAY,
     LIVINGSTON,
     LIVINGSTON_DISPLAY,
+)
+
+from ...models import (
+    DataSource,
+    DataParameter,
 )
 
 IFO_CHOICES = [
@@ -113,7 +120,7 @@ FIELDS_PROPERTIES = OrderedDict([
     (RAND_SEED, {
         'type': field.INTEGER,
         'label': RAND_SEED_DISPLAY,
-        'placeholder': '10.54',
+        'placeholder': '897359',
         'initial': None,
         'required': True,
     }),
@@ -139,7 +146,7 @@ FIELDS_PROPERTIES = OrderedDict([
         'required': True,
     }),
     (DURATION, {
-        'type': field.INTEGER,
+        'type': field.DURATION,
         'label': DURATION_DISPLAY,
         'placeholder': '5/10m/2h/30d',
         'initial': None,
@@ -150,14 +157,34 @@ FIELDS_PROPERTIES = OrderedDict([
 
 class DataParameterSimulatedForm(DynamicForm):
     """
-    Open Data Parameter Form extending Dynamic Form
+    Simulated Data Parameter Form extending Dynamic Form
     """
 
     def __init__(self, *args, **kwargs):
         kwargs['name'] = 'data-parameter'
+
+        # update the randseed value
+        FIELDS_PROPERTIES[RAND_SEED].update({
+            'initial': random.randint(-2147483648, 2147483647),
+        })
+
         kwargs['fields_properties'] = FIELDS_PROPERTIES
 
         # We need to job to extract job information but job itself is not going to be used for saving form
         self.job = kwargs.pop('job', None)
 
         super(DataParameterSimulatedForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        # find the data source first
+        data_source = DataSource.objects.get(job=self.job)
+
+        # Create or update the data parameters
+        for name, value in self.cleaned_data.items():
+            DataParameter.objects.update_or_create(
+                data_source=data_source,
+                name=name,
+                defaults={
+                    'value': value,
+                }
+            )

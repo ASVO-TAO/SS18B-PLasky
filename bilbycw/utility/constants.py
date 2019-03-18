@@ -15,6 +15,7 @@ from ..forms.submit import SubmitJobForm
 from ..forms.datasource.datasource import DataSourceForm
 from ..forms.dataparameter.real import DataParameterRealForm
 from ..forms.dataparameter.simulated import DataParameterSimulatedForm
+from ..forms.searchparameter.searchparameter import SearchParameterForm
 
 
 # BilbyCWJob Creation/Edit/Summary related
@@ -30,8 +31,8 @@ LAUNCH = 'launch'
 # Number of TABs to show up in the UI. We currently have 4 TABs
 TABS = [
     START,
-    DATA_SOURCE,
     DATA_PARAMETER,
+    SEARCH_PARAMETER,
     LAUNCH,
 ]
 TABS_INDEXES = set_dict_indices(TABS)
@@ -51,6 +52,7 @@ FORMS_NEW = {
     DATA_SOURCE: DataSourceForm,
     DATA_PARAMETER_REAL: DataParameterRealForm,
     DATA_PARAMETER_SIMULATED: DataParameterSimulatedForm,
+    SEARCH_PARAMETER: SearchParameterForm,
     LAUNCH: SubmitJobForm,
 }
 

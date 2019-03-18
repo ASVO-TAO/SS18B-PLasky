@@ -17,6 +17,8 @@ from .field import (
     get_zero_to_pi_input,
     get_zero_to_2pi_input,
     get_float_input,
+    get_duration_input,
+    DURATION,
     INTEGER,
     POSITIVE_INTEGER,
     FLOAT,
@@ -126,6 +128,15 @@ class DynamicForm(forms.Form):
 
             elif properties.get('type') == FLOAT:
                 self.fields[name] = get_float_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == DURATION:
+                self.fields[name] = get_duration_input(
                     label=properties.get('label', name),
                     placeholder=properties.get('placeholder', None),
                     initial=properties.get('initial', None),

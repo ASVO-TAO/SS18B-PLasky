@@ -12,9 +12,11 @@ from bilbycommon.utility.validators import (
     validate_less_than_pi,
     validate_less_than_2pi,
     validate_less_than_equal_hundred,
+    validate_duration_number_with_units,
 )
 
 # field types
+DURATION = 'duration'
 INTEGER = 'integer'
 POSITIVE_INTEGER = 'positive-integer'
 TEXT = 'text'
@@ -67,6 +69,31 @@ def get_text_input(label, required, placeholder=None, initial=None, validators=(
         initial=initial,
         placeholder=placeholder,
         validators=validators,
+    )
+
+
+def get_duration_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom text field to support duration field
+    currently duration can be of the following formats:
+    1. Number: represents the number of seconds
+    2. Number(s/m/h/d): number followed by the unit of time (s=seconds, m=minutes, h=hours, d=days)
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom text field to cater duration
+    """
+
+    default_validators = [validate_duration_number_with_units, ]
+
+    return CustomCharField(
+        label=label,
+        required=required,
+        initial=initial,
+        placeholder=placeholder,
+        validators=list(itertools.chain(default_validators, validators)),
     )
 
 

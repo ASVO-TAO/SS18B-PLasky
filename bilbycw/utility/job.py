@@ -6,7 +6,7 @@ import json
 
 from bilbycommon.utility.display_names import (
     REAL_DATA,
-    SIMULATED_DATA,
+    FAKE_DATA,
 )
 from bilbycommon.utility.utils import (
     list_job_actions,
@@ -123,12 +123,18 @@ class CWJob(object):
             # finding the correct data parameters for the data type
             all_data_parameters = DataParameter.objects.filter(data_source=self.data_source)
 
-            if self.data_source == REAL_DATA:
+            if self.data_source.data_source == REAL_DATA:
                 for name in REAL_DATA_FIELDS_PROPERTIES.keys():
-                    self.data_parameters.append(all_data_parameters.get(name=name))
-            elif self.data_source == SIMULATED_DATA:
+                    try:
+                        self.data_parameters.append(all_data_parameters.get(name=name))
+                    except DataParameter.DoesNotExist:
+                        continue
+            elif self.data_source.data_source == FAKE_DATA:
                 for name in SIMULATED_DATA_FIELDS_PROPERTIES.keys():
-                    self.data_parameters.append(all_data_parameters.get(name=name))
+                    try:
+                        self.data_parameters.append(all_data_parameters.get(name=name))
+                    except DataParameter.DoesNotExist:
+                        continue
 
         # populating search parameters tab information
         self.search_parameters = SearchParameter.objects.filter(job=self.job)

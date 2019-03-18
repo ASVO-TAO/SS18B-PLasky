@@ -5,6 +5,10 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from bilbycommon.utility.display_names import (
+    REAL_DATA,
+    FAKE_DATA,
+)
 from bilbycommon.utility.utils import get_to_be_active_tab
 from bilbycw.utility.constants import (
     START,
@@ -23,6 +27,7 @@ from bilbycw.utility.constants import (
 from ..utility.job import CWJob
 from ..models import (
     BilbyCWJob,
+    DataSource,
 )
 
 
@@ -35,8 +40,8 @@ def get_enabled_tabs(bilby_job, active_tab):
     """
 
     # for any bilby job at least First Two tabs should be enabled
-    # because, Start tab must have been submitted before a BilbyPEJob is created
-    # and as a result the user should be able to see Data Tab
+    # because, Start tab must have been submitted before a BilbyCWJob is created
+    # and as a result the user should be able to see Data Parameter Tab
     enabled_tabs = [START, DATA_PARAMETER, ]
 
     # if nothing has been saved yet, that means, no form has been submitted yet,
@@ -81,6 +86,8 @@ def generate_forms(job=None, forms=None):
         forms = {
             START: None,
             DATA_SOURCE: None,
+            DATA_PARAMETER_REAL: None,
+            DATA_PARAMETER_SIMULATED: None,
             LAUNCH: None,
         }
 
@@ -119,18 +126,30 @@ def generate_forms(job=None, forms=None):
     # have easy update option by passing the instance.
     if job:
         # non-model forms update
+        forms[DATA_PARAMETER_REAL].update_from_database(job=job)
         forms[LAUNCH].update_from_database(job=job)
 
     return forms
 
 
-def filter_as_per_input(forms_to_save, request):
+def filter_as_per_input(forms_to_save, request, job):
     """
     Filters out irrelevant forms from the to save list based on user input
     :param forms_to_save: list of forms to save for a tab
     :param request: Django request object
+    :param job: BilbyCWJob instance
     :return: new list of forms to save
     """
+
+    if request.POST.get('form-tab', None) == DATA_PARAMETER and job:
+        try:
+            data_source = DataSource.objects.get(job=job)
+            if data_source.data_source == REAL_DATA:
+                forms_to_save = [DATA_PARAMETER_REAL, ]
+            if data_source.data_source == FAKE_DATA:
+                forms_to_save = [DATA_PARAMETER_SIMULATED, ]
+        except DataSource.DoesNotExist:
+            pass
 
     # # returning the corrected forms need to be saved for DATA tab
     # if DATA in forms_to_save:
@@ -176,7 +195,7 @@ def save_tab(request, active_tab):
     # not all of them are saved, only the forms that are in the tab are considered.
     # additionally, it is based on the user input
     # filtering the required forms to be save based on user input
-    forms_to_save = filter_as_per_input(TAB_FORMS.get(active_tab), request)
+    forms_to_save = filter_as_per_input(TAB_FORMS.get(active_tab), request, job)
 
     error_in_form = False
 
@@ -199,7 +218,10 @@ def save_tab(request, active_tab):
                 forms[form_to_save] = FORMS_NEW[form_to_save](request.POST, request=request, job=job,
                                                               prefix=form_to_save)
                 # then save the form
-                forms[form_to_save].save()
+                # rechecking the forms validity again, this is just because cleaned data attribute is only
+                # generated once is_valid is called
+                if forms[form_to_save].is_valid():
+                    forms[form_to_save].save()
 
             # checking if the job is created in the form, this will happen only for the start tab where
             # upon saving the start form a draft job will be created and
@@ -229,6 +251,34 @@ def save_tab(request, active_tab):
         forms = generate_forms(job, forms=forms)
 
     return active_tab, forms, submitted
+
+
+def remove_redundant_forms(forms, bilby_job):
+    if not bilby_job:
+        # remove anything but start tab forms
+        for name in FORMS_NEW.keys():
+
+            if name in [START, DATA_SOURCE, ]:
+                continue
+            else:
+                forms.update({
+                    name: None,
+                })
+
+        return forms
+
+    clean_forms = forms.copy()
+
+    if bilby_job.data_source.data_source != REAL_DATA:
+        clean_forms.update({
+            DATA_PARAMETER_REAL: None,
+        })
+    if bilby_job.data_source.data_source != FAKE_DATA:
+        clean_forms.update({
+            DATA_PARAMETER_SIMULATED: None,
+        })
+
+    return clean_forms
 
 
 @login_required
@@ -285,6 +335,9 @@ def new_job(request):
     except (KeyError, AttributeError):
         bilby_job = None
 
+    # Clean up redundant forms based on bilby job
+    forms = remove_redundant_forms(forms=forms, bilby_job=bilby_job)
+
     # Get enabled Tabs based on the bilby job and active job
     enabled_tabs = get_enabled_tabs(bilby_job, active_tab)
 
@@ -301,6 +354,7 @@ def new_job(request):
             'data_source_form': forms[DATA_SOURCE],
             'data_parameter_real_form': forms[DATA_PARAMETER_REAL],
             'data_parameter_simulated_form': forms[DATA_PARAMETER_SIMULATED],
+            'search_parameter_form': forms[SEARCH_PARAMETER],
             'submit_form': forms[LAUNCH],
 
             # job so far...

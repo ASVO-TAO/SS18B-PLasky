@@ -75,3 +75,23 @@ def validate_less_than_2pi(value):
             raise ValidationError(_("Must be less than 2*pi"))
     except ValueError:
         raise ValidationError(_("Must be a float number"))
+
+
+def validate_duration_number_with_units(value):
+    """
+    Validates a value whether it is a number or number followed by a single character representing unit of time
+    For example: 30, 30s, 30.5m, 2.5h, 66d etc.
+    :param value: value to validate
+    :return: Nothing or can raise Validation Errors
+    """
+
+    try:
+        if value[-1] in ['s', 'm', 'h', 'd', ]:
+            value = value[:-1]
+
+        float_val = float(value)
+
+        if float_val <= 0.0:
+            raise ValidationError(_("Must be greater than 0"))
+    except ValueError:
+        raise ValidationError(_("Must be a number or number followed by unit(s/m/h/d)"))
