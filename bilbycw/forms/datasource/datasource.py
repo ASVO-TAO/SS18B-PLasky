@@ -46,9 +46,12 @@ class DataSourceForm(forms.ModelForm):
         data = self.cleaned_data
 
         # don't do anything if data_source has not been changed
-        data_source = DataSource.objects.get(job=self.job)
-        if data_source.data_source == data.get(DATA_SOURCE):
-            return
+        try:
+            data_source = DataSource.objects.get(job=self.job)
+            if data_source.data_source == data.get(DATA_SOURCE):
+                return
+        except DataSource.DoesNotExist:
+            pass
 
         # deleting data object will make sure that there exists no parameter
         # this avoids duplicating parameters
