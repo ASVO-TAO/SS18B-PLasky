@@ -36,7 +36,7 @@ def display_name(value):
         value_list = ast.literal_eval(value)
         display_list = [DISPLAY_NAME_MAP.get(x, x) for x in value_list]
         return ', '.join(display_list)
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, SyntaxError):
         pass
 
     return DISPLAY_NAME_MAP.get(value, value)
