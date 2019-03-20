@@ -2,6 +2,7 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
+import ast
 import random
 
 from collections import OrderedDict
@@ -41,6 +42,7 @@ from bilbycommon.utility.display_names import (
     HANFORD_DISPLAY,
     LIVINGSTON,
     LIVINGSTON_DISPLAY,
+    FAKE_DATA,
 )
 
 from ...models import (
@@ -188,3 +190,34 @@ class DataParameterSimulatedForm(DynamicForm):
                     'value': value,
                 }
             )
+
+    def update_from_database(self, job):
+        """
+        Populates the form field with the values stored in the database
+        :param job: instance of job model for which the data parameters belong to
+        :return: Nothing
+        """
+
+        if not job:
+            return
+        else:
+
+            # check whether the data source is real data or not
+            # if not nothing to populate
+            try:
+                data_source = DataSource.objects.get(job=job)
+                if data_source.data_source != FAKE_DATA:
+                    return
+            except DataSource.DoesNotExist:
+                return
+
+        # iterate over the fields
+        for name in FIELDS_PROPERTIES.keys():
+            try:
+                value = DataParameter.objects.get(data_source=data_source, name=name).value
+                # set the field value
+                # extra processing required for checkbox type fields
+                self.fields[name].initial = ast.literal_eval(value) if name == IFO else value
+
+            except DataParameter.DoesNotExist:
+                continue

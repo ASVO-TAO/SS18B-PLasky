@@ -127,6 +127,7 @@ def generate_forms(job=None, forms=None):
     if job:
         # non-model forms update
         forms[DATA_PARAMETER_REAL].update_from_database(job=job)
+        forms[DATA_PARAMETER_SIMULATED].update_from_database(job=job)
         forms[LAUNCH].update_from_database(job=job)
 
     return forms
