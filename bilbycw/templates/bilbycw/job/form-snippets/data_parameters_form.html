@@ -23,6 +23,12 @@
         </div>
     {% endfor %}
 
+    <div>
+    {% for fieldset_name, fields in data_parameter_simulated_form.fieldsets.items %}
+        {{ fieldset_name }}
+    {% endfor %}
+    </div>
+
     {% for field in data_parameter_simulated_form %}
         <div class="row field
                     {% if field.field.required %}required{% endif %}

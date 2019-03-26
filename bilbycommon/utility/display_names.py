@@ -235,7 +235,7 @@ DISPLAY_NAME_MAP.update({
 # })
 
 DATA_SOURCE = 'data_source'
-DATA_SOURCE_DISPLAY = 'Data Source'
+DATA_SOURCE_DISPLAY = 'Data source'
 FAKE_DATA = 'fakedata'
 FAKE_DATA_DISPLAY = 'Simulated Data'
 REAL_DATA = 'sfts'
@@ -250,9 +250,9 @@ DISPLAY_NAME_MAP.update({
 # REAL Data Parameters
 
 GLOB = 'glob'
-GLOB_DISPLAY = 'glob'
-START_TIME_CW = 'starttime'
-START_TIME_CW_DISPLAY = 'Start Time'
+GLOB_DISPLAY = 'Source dataset'
+START_TIME_CW = 'starttime__cw'
+START_TIME_CW_DISPLAY = 'Start time'
 DURATION = 'duration'
 DURATION_DISPLAY = 'Duration'
 
@@ -272,34 +272,40 @@ DISPLAY_NAME_MAP.update({
 # FAKE Data Parameters
 
 H0 = 'h0'
-H0_DISPLAY = 'h0'
+H0_DISPLAY = 'Signal strength (h₀)'
 A0 = 'a0'
-A0_DISPLAY = 'a0'
+A0_DISPLAY = 'Orbit projected semi-major axis (a sin i, seconds)'
 ORBIT_TP = 'orbitTp'
-ORBIT_TP_DISPLAY = 'orbitTp'
+ORBIT_TP_DISPLAY = 'Time of ascension (GPS s)'
 SIGNAL_FREQUENCY = 'signalfreq'
-SIGNAL_FREQUENCY_DISPLAY = 'Signal Frequency'
-# PSI , PSI_DISPAY are already there
+SIGNAL_FREQUENCY_DISPLAY = 'Signal frequency (Hz)'
+PSI_CW = 'psi__cw'
+PSI_CW_DISPLAY = 'Polarisation angle (ψ, rad)'
 COSI = 'cosi'
-COSI_DISPLAY = 'cosi'
+COSI_DISPLAY = 'Inclination angle (cos ι)'
 ALPHA = 'alpha'
-ALPHA_DISPLAY = 'alpha'
+ALPHA_DISPLAY = 'Right ascension (rad)'
 DELTA = 'delta'
-DELTA_DISPLAY = 'delta'
+DELTA_DISPLAY = 'Declination (rad)'
 ORBIT_P = 'orbitP'
-ORBIT_P_DISPLAY = 'orbitP'
+ORBIT_P_DISPLAY = 'Orbital period (s)'
 RAND_SEED = 'randseed'
-RAND_SEED_DISPLAY = 'randseed'
+RAND_SEED_DISPLAY = 'Random seed'
 IFO = 'ifo'
-IFO_DISPLAY = 'ifo'
+IFO_DISPLAY = 'Interferometer(s)'
 NOISE_LEVEL = 'noiselevel'
-NOISE_LEVEL_DISPLAY = 'Noise Level'
+NOISE_LEVEL_DISPLAY = 'One-sided noise PSD (sqrt(Sh), Hz^1/2)'
+# NOISE_LEVEL_HANFORD = 'noiselevelhanford'
+# NOISE_LEVEL_HANFORD_DISPLAY = 'Hanford'
+# NOISE_LEVEL_LIVINGSTON = 'noiselevellivingston'
+# NOISE_LEVEL_LIVINGSTION_DISPLAY = 'Livingston'
 
 DISPLAY_NAME_MAP.update({
     H0: H0_DISPLAY,
     A0: A0_DISPLAY,
     ORBIT_TP: ORBIT_TP_DISPLAY,
     SIGNAL_FREQUENCY: SIGNAL_FREQUENCY_DISPLAY,
+    PSI_CW: PSI_CW_DISPLAY,
     COSI: COSI_DISPLAY,
     ALPHA: ALPHA_DISPLAY,
     DELTA: DELTA_DISPLAY,
@@ -307,16 +313,27 @@ DISPLAY_NAME_MAP.update({
     RAND_SEED: RAND_SEED_DISPLAY,
     IFO: IFO_DISPLAY,
     NOISE_LEVEL: NOISE_LEVEL_DISPLAY,
+    # NOISE_LEVEL_HANFORD: NOISE_LEVEL_HANFORD_DISPLAY,
+    # NOISE_LEVEL_LIVINGSTON: NOISE_LEVEL_LIVINGSTION_DISPLAY,
 })
 
 
 # Search Parameters
 
 FREQUENCY = 'freq'
-FREQUENCY_DISPLAY = 'Frequency'
+FREQUENCY_DISPLAY = 'Start frequency (Hz)'
 BAND = 'band'
-BAND_DISPLAY = 'Band'
-# a0, orbitTp, alpha, delta, orbitP already present
+BAND_DISPLAY = 'Search band (Hz)'
+A0_SEARCH = 'a0__search'
+A0_SEARCH_DISPLAY = 'Search a sin i (s)'
+ORBIT_TP_SEARCH = 'orbitTp__search'
+ORBIT_TP_SEARCH_DISPLAY = 'Search time of ascension'
+ALPHA_SEARCH = 'alpha__search'
+ALPHA_SEARCH_DISPLAY = 'Search right ascension (rad)'
+DELTA_SEARCH = 'delta__search'
+DELTA_SEARCH_DISPLAY = 'Search declination (rad)'
+ORBIT_P_SEARCH = 'orbitP__search'
+ORBIT_P_SEARCH_DISPLAY = 'Search orbital period (s)'
 
 # a0 choices
 # fixed is already there
@@ -327,5 +344,10 @@ RANGE_DISPLAY = 'Range'
 DISPLAY_NAME_MAP.update({
     FREQUENCY: FREQUENCY_DISPLAY,
     BAND: BAND_DISPLAY,
+    A0_SEARCH: A0_SEARCH_DISPLAY,
+    ORBIT_TP_SEARCH: ORBIT_TP_SEARCH_DISPLAY,
+    ALPHA_SEARCH: ALPHA_SEARCH_DISPLAY,
+    DELTA_SEARCH: DELTA_SEARCH_DISPLAY,
+    ORBIT_P_SEARCH: ORBIT_P_SEARCH_DISPLAY,
     RANGE: RANGE_DISPLAY,
 })

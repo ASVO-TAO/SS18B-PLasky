@@ -20,8 +20,8 @@ from bilbycommon.utility.display_names import (
     ORBIT_P_DISPLAY,
     SIGNAL_FREQUENCY,
     SIGNAL_FREQUENCY_DISPLAY,
-    PSI,
-    PSI_DISPLAY,
+    PSI_CW,
+    PSI_CW_DISPLAY,
     COSI,
     COSI_DISPLAY,
     ALPHA,
@@ -34,6 +34,10 @@ from bilbycommon.utility.display_names import (
     IFO_DISPLAY,
     NOISE_LEVEL,
     NOISE_LEVEL_DISPLAY,
+    # NOISE_LEVEL_HANFORD,
+    # NOISE_LEVEL_HANFORD_DISPLAY,
+    # NOISE_LEVEL_LIVINGSTON,
+    # NOISE_LEVEL_LIVINGSTION_DISPLAY,
     START_TIME_CW,
     START_TIME_CW_DISPLAY,
     DURATION,
@@ -66,27 +70,27 @@ FIELDS_PROPERTIES = OrderedDict([
     (A0, {
         'type': field.FLOAT,
         'label': A0_DISPLAY,
-        'placeholder': '10.54',
-        'initial': None,
+        'placeholder': '1.45',
+        'initial': 1.45,
         'required': True,
     }),
     (ORBIT_TP, {
         'type': field.FLOAT,
         'label': ORBIT_TP_DISPLAY,
-        'placeholder': '10.54',
+        'placeholder': '',
         'initial': None,
         'required': True,
     }),
     (SIGNAL_FREQUENCY, {
         'type': field.FLOAT,
         'label': SIGNAL_FREQUENCY_DISPLAY,
-        'placeholder': '10.54',
-        'initial': None,
+        'placeholder': '150',
+        'initial': 150,
         'required': True,
     }),
-    (PSI, {
+    (PSI_CW, {
         'type': field.FLOAT,
-        'label': PSI_DISPLAY,
+        'label': PSI_CW_DISPLAY,
         'placeholder': '10.54',
         'initial': None,
         'required': True,
@@ -156,6 +160,23 @@ FIELDS_PROPERTIES = OrderedDict([
     }),
 ])
 
+# FIELDSETS = OrderedDict([
+#     (H0_DISPLAY, [H0, ]),
+#     (A0_DISPLAY, [A0, ]),
+#     (ORBIT_TP_DISPLAY, [ORBIT_TP, ]),
+#     (SIGNAL_FREQUENCY_DISPLAY, [SIGNAL_FREQUENCY, ]),
+#     (PSI_DISPLAY, [PSI, ]),
+#     (COSI_DISPLAY, [COSI, ]),
+#     (ALPHA_DISPLAY, [ALPHA, ]),
+#     (DELTA_DISPLAY, [DELTA, ]),
+#     (ORBIT_P_DISPLAY, [ORBIT_P, ]),
+#     (RAND_SEED_DISPLAY, [RAND_SEED, ]),
+#     (IFO_DISPLAY, [IFO, ]),
+#     (NOISE_LEVEL_DISPLAY, [NOISE_LEVEL_DISPLAY]),
+#     (START_TIME_CW_DISPLAY, [START_TIME_CW, ]),
+#     (DURATION_DISPLAY, [DURATION, ]),
+# ])
+
 
 class DataParameterSimulatedForm(DynamicForm):
     """
@@ -171,6 +192,7 @@ class DataParameterSimulatedForm(DynamicForm):
         })
 
         kwargs['fields_properties'] = FIELDS_PROPERTIES
+        # self.fieldsets = FIELDSETS
 
         # We need to job to extract job information but job itself is not going to be used for saving form
         self.job = kwargs.pop('job', None)

@@ -28,13 +28,13 @@
                     <h5 class="mb-0">
                         <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseDataSource"
                                 aria-expanded="true" aria-controls="collapseDataSource">
-                            Data Source and Parameters
+                            Data source and Parameters
                         </button>
                     </h5>
                 </div>
                 <div id="collapseDataSource" class="collapse" aria-labelledby="headingDataSource" data-parent="#accordion">
                     <div class="card-body">
-                        <div class="info-job info-heading">Data Source</div>
+                        <div class="info-job info-heading">Data source</div>
                         <div class="info-job info-content text-justify">{{ drafted_job.data_source.data_source | display_name }}</div>
                         {% if drafted_job.data_parameters %}
                             {% for data_parameter in drafted_job.data_parameters %}

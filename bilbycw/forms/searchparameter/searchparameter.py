@@ -11,16 +11,16 @@ from bilbycommon.utility.display_names import (
     FREQUENCY_DISPLAY,
     BAND,
     BAND_DISPLAY,
-    A0,
-    A0_DISPLAY,
-    ORBIT_TP,
-    ORBIT_TP_DISPLAY,
-    ORBIT_P,
-    ORBIT_P_DISPLAY,
-    ALPHA,
-    ALPHA_DISPLAY,
-    DELTA,
-    DELTA_DISPLAY,
+    A0_SEARCH,
+    A0_SEARCH_DISPLAY,
+    ORBIT_TP_SEARCH,
+    ORBIT_TP_SEARCH_DISPLAY,
+    ORBIT_P_SEARCH,
+    ORBIT_P_SEARCH_DISPLAY,
+    ALPHA_SEARCH,
+    ALPHA_SEARCH_DISPLAY,
+    DELTA_SEARCH,
+    DELTA_SEARCH_DISPLAY,
 )
 
 from ...models import (
@@ -42,37 +42,37 @@ FIELDS_PROPERTIES = OrderedDict([
         'initial': None,
         'required': True,
     }),
-    (A0, {
+    (A0_SEARCH, {
         'type': field.FLOAT,
-        'label': A0_DISPLAY,
+        'label': A0_SEARCH_DISPLAY,
         'placeholder': '10.54',
         'initial': None,
         'required': True,
     }),
-    (ORBIT_TP, {
+    (ORBIT_TP_SEARCH, {
         'type': field.FLOAT,
-        'label': ORBIT_TP_DISPLAY,
+        'label': ORBIT_TP_SEARCH_DISPLAY,
         'placeholder': '10.54',
         'initial': None,
         'required': True,
     }),
-    (ALPHA, {
+    (ALPHA_SEARCH, {
         'type': field.FLOAT,
-        'label': ALPHA_DISPLAY,
+        'label': ALPHA_SEARCH_DISPLAY,
         'placeholder': '10.54',
         'initial': None,
         'required': True,
     }),
-    (DELTA, {
+    (DELTA_SEARCH, {
         'type': field.FLOAT,
-        'label': DELTA_DISPLAY,
+        'label': DELTA_SEARCH_DISPLAY,
         'placeholder': '10.54',
         'initial': None,
         'required': True,
     }),
-    (ORBIT_P, {
+    (ORBIT_P_SEARCH, {
         'type': field.FLOAT,
-        'label': ORBIT_P_DISPLAY,
+        'label': ORBIT_P_SEARCH_DISPLAY,
         'placeholder': '10.54',
         'initial': None,
         'required': True,
@@ -103,5 +103,6 @@ class SearchParameterForm(DynamicForm):
                 name=name,
                 defaults={
                     'value': value,
+
                 }
             )

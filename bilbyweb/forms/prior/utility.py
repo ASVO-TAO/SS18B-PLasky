@@ -148,33 +148,33 @@ def get_field_properties_by_signal_choice(signal):
         for name, value in BBH_FIELDS_PROPERTIES.items():
             fieldset_fields = []
             # setting up the type field
-            name_for_field, value_for_filed = prior_type_field(name, value)
+            name_for_field, value_for_field = prior_type_field(name, value)
             field_properties.update({
-                name_for_field: value_for_filed,
+                name_for_field: value_for_field,
             })
 
             fieldset_fields.append(name_for_field)
 
             # setting up the fixed value field
-            name_for_field, value_for_filed = prior_fixed_field(name, value, signal)
+            name_for_field, value_for_field = prior_fixed_field(name, value, signal)
             field_properties.update({
-                name_for_field: value_for_filed,
+                name_for_field: value_for_field,
             })
 
             fieldset_fields.append(name_for_field)
 
             # setting up the min value field
-            name_for_field, value_for_filed = prior_min_field(name, value)
+            name_for_field, value_for_field = prior_min_field(name, value)
             field_properties.update({
-                name_for_field: value_for_filed,
+                name_for_field: value_for_field,
             })
 
             fieldset_fields.append(name_for_field)
 
             # setting up the max value field
-            name_for_field, value_for_filed = prior_max_field(name, value)
+            name_for_field, value_for_field = prior_max_field(name, value)
             field_properties.update({
-                name_for_field: value_for_filed,
+                name_for_field: value_for_field,
             })
 
             fieldset_fields.append(name_for_field)
