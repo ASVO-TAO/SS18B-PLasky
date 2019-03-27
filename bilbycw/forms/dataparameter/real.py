@@ -52,6 +52,8 @@ FIELDS_PROPERTIES = OrderedDict([
         'placeholder': '5/10m/2h/30d',
         'initial': '190d',
         'required': True,
+        'help_text': 'Specify a number of seconds, or you can use '
+                     'm, h, or d for minutes, hours, days: e.g., 10d means ten days.',
     }),
 ])
 

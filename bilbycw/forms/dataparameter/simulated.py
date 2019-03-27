@@ -66,6 +66,7 @@ FIELDS_PROPERTIES = OrderedDict([
         'placeholder': '2.11',
         'initial': 8e-26,
         'required': True,
+        'help_text': 'You can set this to zero for a noise-only realisation.',
     }),
     (A0, {
         'type': field.NON_NEGATIVE_FLOAT,
@@ -129,6 +130,9 @@ FIELDS_PROPERTIES = OrderedDict([
         'placeholder': '897359',
         'initial': None,
         'required': True,
+        'help_text': 'The random seed is used to generate the noise realisation. '
+                     'This will be selected automatically for you, but you can change '
+                     'it if you need a particular, reproducible noise realisation.',
     }),
     (IFO, {
         'type': field.MULTIPLE_CHOICES,
@@ -157,8 +161,11 @@ FIELDS_PROPERTIES = OrderedDict([
         'placeholder': '5/10m/2h/30d',
         'initial': None,
         'required': True,
+        'help_text': 'Specify a number of seconds, or you can use '
+                     'm, h, or d for minutes, hours, days: e.g., 10d means ten days.',
     }),
 ])
+
 
 # FIELDSETS = OrderedDict([
 #     (H0_DISPLAY, [H0, ]),
