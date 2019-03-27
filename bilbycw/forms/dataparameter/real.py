@@ -19,6 +19,7 @@ from bilbycommon.utility.display_names import (
     O2_DISPLAY,
     REAL_DATA,
 )
+from ...utility.validators import validate_start_time_dependent_on_dataset
 
 from ...models import (
     DataSource,
@@ -112,3 +113,19 @@ class DataParameterRealForm(DynamicForm):
 
             except DataParameter.DoesNotExist:
                 continue
+
+    def clean(self):
+        """
+        Checks the validation of the form. Basically to achieve the dependent field validation for
+        Dynamic Form.
+        """
+
+        data = self.cleaned_data
+
+        start_time = data.get(START_TIME_CW)
+        source_dataset = data.get(GLOB)
+
+        error = validate_start_time_dependent_on_dataset(start_time, source_dataset)
+
+        if error:
+            self.add_error(START_TIME_CW, error)
