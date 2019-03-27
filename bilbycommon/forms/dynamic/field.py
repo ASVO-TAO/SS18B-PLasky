@@ -9,8 +9,13 @@ from django import forms
 from bilbycommon.utility.validators import (
     validate_positive_integer,
     validate_positive_float,
+    validate_non_negative_float,
+    validate_greater_than_10_and_less_than_2000,
+    validate_from_0_and_to_1,
     validate_less_than_pi,
     validate_less_than_2pi,
+    validate_from_zero_to_less_than_2pi,
+    validate_from_minus_pi_to_pi,
     validate_less_than_equal_hundred,
     validate_duration_number_with_units,
 )
@@ -23,9 +28,14 @@ TEXT = 'text'
 FLOAT = 'float'
 MULTIPLE_CHOICES = 'multiple-choices'
 POSITIVE_FLOAT = 'positive-float'
+NON_NEGATIVE_FLOAT = 'non-negative-float'
+RANGE_10_TO_2000_FLOAT = 'range-10-to-2000-float'
 ZERO_TO_HUNDRED = 'zero-to-hundred'
+FROM_ZERO_TO_ONE = 'from-zero-to-one'
 ZERO_TO_PI = 'zero-to-pi'
 ZERO_TO_2PI = 'zero-to-2pi'
+FROM_ZERO_TO_LESS_THAN_2PI = 'from-zero-to-less-than-2pi'
+FROM_MINUS_PI_TO_PI = 'from-minus-pi-to-pi'
 TEXT_AREA = 'text-area'
 SELECT = 'select'
 RADIO = 'radio'
@@ -158,6 +168,48 @@ def get_positive_float_input(label, required, placeholder=None, initial=None, va
     )
 
 
+def get_non_negative_float_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom non-negative float number field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom floating number field that accepts only number that is greater than or equal to zero
+    """
+    default_validators = [validate_non_negative_float, ]
+
+    return CustomFloatField(
+        label=label,
+        required=required,
+        initial=initial,
+        placeholder=placeholder,
+        validators=list(itertools.chain(default_validators, validators)),
+    )
+
+
+def get_greater_than_10_and_less_than_2000_float_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom float number field in the range (10, 2000)
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom floating number field that accepts only number that falls in the range (10, 2000)
+    """
+    default_validators = [validate_greater_than_10_and_less_than_2000, ]
+
+    return CustomFloatField(
+        label=label,
+        required=required,
+        initial=initial,
+        placeholder=placeholder,
+        validators=list(itertools.chain(default_validators, validators)),
+    )
+
+
 def get_zero_to_hundred_input(label, required, placeholder=None, initial=None, validators=()):
     """
     Method to get a custom positive float number field
@@ -169,6 +221,27 @@ def get_zero_to_hundred_input(label, required, placeholder=None, initial=None, v
     :return: A custom floating number field that accepts only number that is greater than zero and less than 100
     """
     default_validators = [validate_positive_float, validate_less_than_equal_hundred, ]
+
+    return CustomFloatField(
+        label=label,
+        required=required,
+        initial=initial,
+        placeholder=placeholder,
+        validators=list(itertools.chain(default_validators, validators)),
+    )
+
+
+def get_from_zero_to_one_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom positive float number field
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom floating number field that accepts number in the range [0, 1]
+    """
+    default_validators = [validate_from_0_and_to_1, ]
 
     return CustomFloatField(
         label=label,
@@ -208,9 +281,51 @@ def get_zero_to_2pi_input(label, required, placeholder=None, initial=None, valid
     :param placeholder: Placeholder to appear in the field
     :param initial: Default input value for the field
     :param validators: validators that should be attached with the field
-    :return: A custom floating number field that accepts only numbers greater than zero and less than 2pi(Math.pi)
+    :return: A custom floating number field that accepts numbers greater than zero and less or equal to 2pi(Math.pi)
     """
     default_validators = [validate_positive_float, validate_less_than_2pi, ]
+
+    return CustomFloatField(
+        label=label,
+        required=required,
+        initial=initial,
+        placeholder=placeholder,
+        validators=list(itertools.chain(default_validators, validators)),
+    )
+
+
+def get_from_zero_to_less_than_2pi_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom positive float number field which is less than 2pi
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom floating number field that accepts numbers in the range [0, 2pi)
+    """
+    default_validators = [validate_from_zero_to_less_than_2pi, ]
+
+    return CustomFloatField(
+        label=label,
+        required=required,
+        initial=initial,
+        placeholder=placeholder,
+        validators=list(itertools.chain(default_validators, validators)),
+    )
+
+
+def get_from_minus_pi_to_pi_input(label, required, placeholder=None, initial=None, validators=()):
+    """
+    Method to get a custom float number field whose value is in the range [-pi, +pi]
+    :param label: String label of the field
+    :param required: Boolean to define whether the field is required or not
+    :param placeholder: Placeholder to appear in the field
+    :param initial: Default input value for the field
+    :param validators: validators that should be attached with the field
+    :return: A custom floating number field that accepts numbers in the range [-pi, +pi)
+    """
+    default_validators = [validate_from_minus_pi_to_pi, ]
 
     return CustomFloatField(
         label=label,

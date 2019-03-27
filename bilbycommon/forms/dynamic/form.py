@@ -13,9 +13,14 @@ from .field import (
     get_positive_integer_input,
     get_multiple_choices_input,
     get_positive_float_input,
+    get_non_negative_float_input,
+    get_greater_than_10_and_less_than_2000_float_input,
     get_zero_to_hundred_input,
+    get_from_zero_to_one_input,
     get_zero_to_pi_input,
     get_zero_to_2pi_input,
+    get_from_zero_to_less_than_2pi_input,
+    get_from_minus_pi_to_pi_input,
     get_float_input,
     get_duration_input,
     DURATION,
@@ -23,10 +28,15 @@ from .field import (
     POSITIVE_INTEGER,
     FLOAT,
     POSITIVE_FLOAT,
+    NON_NEGATIVE_FLOAT,
+    RANGE_10_TO_2000_FLOAT,
     MULTIPLE_CHOICES,
     ZERO_TO_HUNDRED,
+    FROM_ZERO_TO_ONE,
     ZERO_TO_PI,
     ZERO_TO_2PI,
+    FROM_ZERO_TO_LESS_THAN_2PI,
+    FROM_MINUS_PI_TO_PI,
     TEXT,
     TEXT_AREA,
     SELECT,
@@ -80,8 +90,35 @@ class DynamicForm(forms.Form):
                     validators=properties.get('validators', ()),
                 )
 
+            elif properties.get('type') == NON_NEGATIVE_FLOAT:
+                self.fields[name] = get_non_negative_float_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == RANGE_10_TO_2000_FLOAT:
+                self.fields[name] = get_greater_than_10_and_less_than_2000_float_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+                )
+
             elif properties.get('type') == ZERO_TO_HUNDRED:
                 self.fields[name] = get_zero_to_hundred_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == FROM_ZERO_TO_ONE:
+                self.fields[name] = get_from_zero_to_one_input(
                     label=properties.get('label', name),
                     placeholder=properties.get('placeholder', None),
                     initial=properties.get('initial', None),
@@ -100,6 +137,24 @@ class DynamicForm(forms.Form):
 
             elif properties.get('type') == ZERO_TO_2PI:
                 self.fields[name] = get_zero_to_2pi_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == FROM_ZERO_TO_LESS_THAN_2PI:
+                self.fields[name] = get_from_zero_to_less_than_2pi_input(
+                    label=properties.get('label', name),
+                    placeholder=properties.get('placeholder', None),
+                    initial=properties.get('initial', None),
+                    required=properties.get('required', False),
+                    validators=properties.get('validators', ()),
+                )
+
+            elif properties.get('type') == FROM_MINUS_PI_TO_PI:
+                self.fields[name] = get_from_minus_pi_to_pi_input(
                     label=properties.get('label', name),
                     placeholder=properties.get('placeholder', None),
                     initial=properties.get('initial', None),

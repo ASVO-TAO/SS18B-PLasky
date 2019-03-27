@@ -21,6 +21,20 @@ def validate_positive_float(value):
         raise ValidationError(_("Must be a float number"))
 
 
+def validate_non_negative_float(value):
+    """
+    Validates a value whether it is a non-negative floating number
+    :param value: value to validate
+    :return: Nothing
+    """
+    try:
+        float_val = float(value)
+        if float_val < 0.0:
+            raise ValidationError(_("Must not be a negative number"))
+    except ValueError:
+        raise ValidationError(_("Must be a float number"))
+
+
 def validate_positive_integer(value):
     """
     Validates a value whether it is a positive integer number
@@ -33,6 +47,34 @@ def validate_positive_integer(value):
             raise ValidationError(_("Must be greater than 0 and whole number"))
     except ValueError:
         raise ValidationError(_("Must be a number"))
+
+
+def validate_greater_than_10_and_less_than_2000(value):
+    """
+    Validates a value whether it is a floating number that falls in the range (10, 2000)
+    :param value: value to validate
+    :return: Nothing
+    """
+    try:
+        float_val = float(value)
+        if float_val <= 10.0 or float_val >= 2000.0:
+            raise ValidationError(_("Must be in the range (10, 2000)"))
+    except ValueError:
+        raise ValidationError(_("Must be a float number"))
+
+
+def validate_from_0_and_to_1(value):
+    """
+    Validates a value whether it is a floating number that falls in the range [0, 1]
+    :param value: value to validate
+    :return: Nothing
+    """
+    try:
+        float_val = float(value)
+        if float_val < 0.0 or float_val > 1.0:
+            raise ValidationError(_("Must be in the range [0, 1]"))
+    except ValueError:
+        raise ValidationError(_("Must be a float number"))
 
 
 def validate_less_than_equal_hundred(value):
@@ -63,6 +105,20 @@ def validate_less_than_pi(value):
         raise ValidationError(_("Must be a float number"))
 
 
+def validate_from_minus_pi_to_pi(value):
+    """
+    Validates a value whether it is a floating number and is in range [-pi, +pi]
+    :param value: value to validate
+    :return: Nothing
+    """
+    try:
+        float_val = float(value)
+        if abs(float_val) > math.pi:
+            raise ValidationError(_("Must be in the range [-pi, +pi]"))
+    except ValueError:
+        raise ValidationError(_("Must be a float number"))
+
+
 def validate_less_than_2pi(value):
     """
     Validates a value whether it is a floating number that is less than or equal to 2pi (2 * math.pi)
@@ -73,6 +129,20 @@ def validate_less_than_2pi(value):
         float_val = float(value)
         if float_val > math.pi * 2:
             raise ValidationError(_("Must be less than 2*pi"))
+    except ValueError:
+        raise ValidationError(_("Must be a float number"))
+
+
+def validate_from_zero_to_less_than_2pi(value):
+    """
+    Validates a value whether it is a floating number and falls in the range [0, 2*math.pi)
+    :param value: value to validate
+    :return: Nothing
+    """
+    try:
+        float_val = float(value)
+        if float_val < 0 or float_val >= 2 * math.pi:
+            raise ValidationError(_("Must be in the range [0, 2*pi)"))
     except ValueError:
         raise ValidationError(_("Must be a float number"))
 
