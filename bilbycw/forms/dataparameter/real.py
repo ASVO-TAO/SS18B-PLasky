@@ -50,7 +50,7 @@ FIELDS_PROPERTIES = OrderedDict([
         'type': field.DURATION,
         'label': DURATION_DISPLAY,
         'placeholder': '5/10m/2h/30d',
-        'initial': None,
+        'initial': '190d',
         'required': True,
     }),
 ])

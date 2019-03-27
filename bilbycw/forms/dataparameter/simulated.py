@@ -63,8 +63,8 @@ FIELDS_PROPERTIES = OrderedDict([
     (H0, {
         'type': field.FLOAT,
         'label': H0_DISPLAY,
-        'placeholder': '10.54',
-        'initial': None,
+        'placeholder': '2.11',
+        'initial': 8e-26,
         'required': True,
     }),
     (A0, {
@@ -77,7 +77,7 @@ FIELDS_PROPERTIES = OrderedDict([
     (ORBIT_TP, {
         'type': field.FLOAT,
         'label': ORBIT_TP_DISPLAY,
-        'placeholder': '',
+        'placeholder': '2.56',
         'initial': None,
         'required': True,
     }),
@@ -91,36 +91,36 @@ FIELDS_PROPERTIES = OrderedDict([
     (PSI_CW, {
         'type': field.FLOAT,
         'label': PSI_CW_DISPLAY,
-        'placeholder': '10.54',
-        'initial': None,
+        'placeholder': '0',
+        'initial': 0,
         'required': True,
     }),
     (COSI, {
         'type': field.FLOAT,
         'label': COSI_DISPLAY,
-        'placeholder': '10.54',
-        'initial': None,
+        'placeholder': '1',
+        'initial': 1,
         'required': True,
     }),
     (ALPHA, {
         'type': field.FLOAT,
         'label': ALPHA_DISPLAY,
-        'placeholder': '10.54',
+        'placeholder': '',
         'initial': None,
         'required': True,
     }),
     (DELTA, {
         'type': field.FLOAT,
         'label': DELTA_DISPLAY,
-        'placeholder': '10.54',
+        'placeholder': '',
         'initial': None,
         'required': True,
     }),
     (ORBIT_P, {
         'type': field.FLOAT,
         'label': ORBIT_P_DISPLAY,
-        'placeholder': '10.54',
-        'initial': None,
+        'placeholder': '68023.84',
+        'initial': 68023.84,
         'required': True,
     }),
     (RAND_SEED, {
@@ -140,8 +140,8 @@ FIELDS_PROPERTIES = OrderedDict([
     (NOISE_LEVEL, {
         'type': field.FLOAT,
         'label': NOISE_LEVEL_DISPLAY,
-        'placeholder': '10.54',
-        'initial': None,
+        'placeholder': '4e-24',
+        'initial': 4e-24,
         'required': True,
     }),
     (START_TIME_CW, {
