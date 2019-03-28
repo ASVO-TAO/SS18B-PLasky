@@ -98,7 +98,7 @@ class DataParameter(models.Model):
     Serves for Real and Simulated Data parameters.
     """
     data_source = models.ForeignKey(DataSource, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20, blank=False, null=False)
+    name = models.CharField(max_length=55, blank=False, null=False)
     value = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
@@ -110,7 +110,7 @@ class SearchParameter(models.Model):
     Model to Store Search Parameters.
     """
     job = models.ForeignKey(BilbyCWJob, on_delete=models.CASCADE)
-    name = models.CharField(max_length=20, blank=False, null=False)
+    name = models.CharField(max_length=55, blank=False, null=False)
     value = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):

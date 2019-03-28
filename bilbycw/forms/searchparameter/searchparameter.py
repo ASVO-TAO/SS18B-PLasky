@@ -13,8 +13,20 @@ from bilbycommon.utility.display_names import (
     BAND_DISPLAY,
     A0_SEARCH,
     A0_SEARCH_DISPLAY,
+    A0_START_SEARCH,
+    A0_START_SEARCH_DISPLAY,
+    A0_END_SEARCH,
+    A0_END_SEARCH_DISPLAY,
+    A0_BINS_SEARCH,
+    A0_BINS_SEARCH_DISPLAY,
     ORBIT_TP_SEARCH,
     ORBIT_TP_SEARCH_DISPLAY,
+    ORBIT_TP_START_SEARCH,
+    ORBIT_TP_START_SEARCH_DISPLAY,
+    ORBIT_TP_END_SEARCH,
+    ORBIT_TP_END_SEARCH_DISPLAY,
+    ORBIT_TP_BINS_SEARCH,
+    ORBIT_TP_BINS_SEARCH_DISPLAY,
     ORBIT_P_SEARCH,
     ORBIT_P_SEARCH_DISPLAY,
     ALPHA_SEARCH,
@@ -49,10 +61,52 @@ FIELDS_PROPERTIES = OrderedDict([
         'initial': None,
         'required': True,
     }),
+    (A0_START_SEARCH, {
+        'type': field.FLOAT,
+        'label': A0_START_SEARCH_DISPLAY,
+        'placeholder': '10.54',
+        'initial': None,
+        'required': True,
+    }),
+    (A0_END_SEARCH, {
+        'type': field.FLOAT,
+        'label': A0_END_SEARCH_DISPLAY,
+        'placeholder': '10.54',
+        'initial': None,
+        'required': True,
+    }),
+    (A0_BINS_SEARCH, {
+        'type': field.INTEGER,
+        'label': A0_BINS_SEARCH_DISPLAY,
+        'placeholder': '500',
+        'initial': None,
+        'required': True,
+    }),
     (ORBIT_TP_SEARCH, {
         'type': field.FLOAT,
         'label': ORBIT_TP_SEARCH_DISPLAY,
         'placeholder': '10.54',
+        'initial': None,
+        'required': True,
+    }),
+    (ORBIT_TP_START_SEARCH, {
+        'type': field.FLOAT,
+        'label': ORBIT_TP_START_SEARCH_DISPLAY,
+        'placeholder': '10.54',
+        'initial': None,
+        'required': True,
+    }),
+    (ORBIT_TP_END_SEARCH, {
+        'type': field.FLOAT,
+        'label': ORBIT_TP_END_SEARCH_DISPLAY,
+        'placeholder': '10.54',
+        'initial': None,
+        'required': True,
+    }),
+    (ORBIT_TP_BINS_SEARCH, {
+        'type': field.INTEGER,
+        'label': ORBIT_TP_BINS_SEARCH_DISPLAY,
+        'placeholder': '500',
         'initial': None,
         'required': True,
     }),
@@ -80,6 +134,17 @@ FIELDS_PROPERTIES = OrderedDict([
 ])
 
 
+FIELDSETS = OrderedDict([
+    (FREQUENCY_DISPLAY, [FREQUENCY, ]),
+    (BAND_DISPLAY, [BAND, ]),
+    (A0_SEARCH_DISPLAY, [A0_START_SEARCH, A0_END_SEARCH, A0_BINS_SEARCH, ]),
+    (ORBIT_TP_SEARCH_DISPLAY, [ORBIT_TP_START_SEARCH, ORBIT_TP_END_SEARCH, ORBIT_TP_BINS_SEARCH, ]),
+    (ALPHA_SEARCH_DISPLAY, [ALPHA_SEARCH, ]),
+    (DELTA_SEARCH_DISPLAY, [DELTA_SEARCH, ]),
+    (ORBIT_P_SEARCH_DISPLAY, [ORBIT_P_SEARCH, ]),
+])
+
+
 class SearchParameterForm(DynamicForm):
     """
     Simulated Data Parameter Form extending Dynamic Form
@@ -89,6 +154,7 @@ class SearchParameterForm(DynamicForm):
         kwargs['name'] = 'search-parameter'
 
         kwargs['fields_properties'] = FIELDS_PROPERTIES
+        self.fieldsets = FIELDSETS
 
         # We need to job to extract job information but job itself is not going to be used for saving form
         self.job = kwargs.pop('job', None)
@@ -103,6 +169,5 @@ class SearchParameterForm(DynamicForm):
                 name=name,
                 defaults={
                     'value': value,
-
                 }
             )

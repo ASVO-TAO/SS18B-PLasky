@@ -5,6 +5,7 @@ from .models import (
     BilbyCWJob,
     DataSource,
     DataParameter,
+    SearchParameter,
 )
 
 
@@ -36,3 +37,9 @@ class DataParameter(admin.ModelAdmin):
 
     get_data.admin_order_field = 'data_source'  # Allows column order sorting
     get_data.short_description = 'data_source'  # Renames column head
+
+
+@admin.register(SearchParameter)
+class SearchParameter(admin.ModelAdmin):
+    list_display = ('job', 'name', 'value')
+    search_fields = ['job__name', 'job__user__username', 'name', 'value', ]

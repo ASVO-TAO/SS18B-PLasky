@@ -237,9 +237,9 @@ DISPLAY_NAME_MAP.update({
 DATA_SOURCE = 'data_source'
 DATA_SOURCE_DISPLAY = 'Data source'
 FAKE_DATA = 'fakedata'
-FAKE_DATA_DISPLAY = 'Simulated Data'
+FAKE_DATA_DISPLAY = 'Simulated data'
 REAL_DATA = 'sfts'
-REAL_DATA_DISPLAY = 'Real Data'
+REAL_DATA_DISPLAY = 'Real data'
 
 DISPLAY_NAME_MAP.update({
     DATA_SOURCE: DATA_SOURCE_DISPLAY,
@@ -251,7 +251,7 @@ DISPLAY_NAME_MAP.update({
 
 GLOB = 'glob'
 GLOB_DISPLAY = 'Source dataset'
-START_TIME_CW = 'starttime__cw'
+START_TIME_CW = 'starttime___cw'
 START_TIME_CW_DISPLAY = 'Start time'
 DURATION = 'duration'
 DURATION_DISPLAY = 'Duration'
@@ -279,7 +279,7 @@ ORBIT_TP = 'orbitTp'
 ORBIT_TP_DISPLAY = 'Time of ascension (GPS s)'
 SIGNAL_FREQUENCY = 'signalfreq'
 SIGNAL_FREQUENCY_DISPLAY = 'Signal frequency (Hz)'
-PSI_CW = 'psi__cw'
+PSI_CW = 'psi___cw'
 PSI_CW_DISPLAY = 'Polarisation angle (ψ, rad)'
 COSI = 'cosi'
 COSI_DISPLAY = 'Inclination angle (cos ι)'
@@ -324,15 +324,27 @@ FREQUENCY = 'freq'
 FREQUENCY_DISPLAY = 'Start frequency (Hz)'
 BAND = 'band'
 BAND_DISPLAY = 'Search band (Hz)'
-A0_SEARCH = 'a0__search'
+A0_SEARCH = 'a0___search'
 A0_SEARCH_DISPLAY = 'Search a sin i (s)'
-ORBIT_TP_SEARCH = 'orbitTp__search'
+A0_START_SEARCH = 'a0_start___search'
+A0_START_SEARCH_DISPLAY = 'Start'
+A0_END_SEARCH = 'a0_end___search'
+A0_END_SEARCH_DISPLAY = 'End'
+A0_BINS_SEARCH = 'a0_bins___search'
+A0_BINS_SEARCH_DISPLAY = '# Bins'
+ORBIT_TP_SEARCH = 'orbitTp___search'
 ORBIT_TP_SEARCH_DISPLAY = 'Search time of ascension'
-ALPHA_SEARCH = 'alpha__search'
+ORBIT_TP_START_SEARCH = 'orbitTp_start___search'
+ORBIT_TP_START_SEARCH_DISPLAY = 'Start'
+ORBIT_TP_END_SEARCH = 'orbitTp_end___search'
+ORBIT_TP_END_SEARCH_DISPLAY = 'End'
+ORBIT_TP_BINS_SEARCH = 'orbitTp_bins___search'
+ORBIT_TP_BINS_SEARCH_DISPLAY = '# Bins'
+ALPHA_SEARCH = 'alpha___search'
 ALPHA_SEARCH_DISPLAY = 'Search right ascension (rad)'
-DELTA_SEARCH = 'delta__search'
+DELTA_SEARCH = 'delta___search'
 DELTA_SEARCH_DISPLAY = 'Search declination (rad)'
-ORBIT_P_SEARCH = 'orbitP__search'
+ORBIT_P_SEARCH = 'orbitP___search'
 ORBIT_P_SEARCH_DISPLAY = 'Search orbital period (s)'
 
 # a0 choices
@@ -345,7 +357,13 @@ DISPLAY_NAME_MAP.update({
     FREQUENCY: FREQUENCY_DISPLAY,
     BAND: BAND_DISPLAY,
     A0_SEARCH: A0_SEARCH_DISPLAY,
+    A0_START_SEARCH: A0_START_SEARCH_DISPLAY,
+    A0_END_SEARCH: A0_END_SEARCH_DISPLAY,
+    A0_BINS_SEARCH: A0_BINS_SEARCH_DISPLAY,
     ORBIT_TP_SEARCH: ORBIT_TP_SEARCH_DISPLAY,
+    ORBIT_TP_START_SEARCH: ORBIT_TP_START_SEARCH_DISPLAY,
+    ORBIT_TP_END_SEARCH: ORBIT_TP_END_SEARCH_DISPLAY,
+    ORBIT_TP_BINS_SEARCH: ORBIT_TP_BINS_SEARCH_DISPLAY,
     ALPHA_SEARCH: ALPHA_SEARCH_DISPLAY,
     DELTA_SEARCH: DELTA_SEARCH_DISPLAY,
     ORBIT_P_SEARCH: ORBIT_P_SEARCH_DISPLAY,
