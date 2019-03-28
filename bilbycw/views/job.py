@@ -128,6 +128,7 @@ def generate_forms(job=None, forms=None):
         # non-model forms update
         forms[DATA_PARAMETER_REAL].update_from_database(job=job)
         forms[DATA_PARAMETER_SIMULATED].update_from_database(job=job)
+        forms[SEARCH_PARAMETER].update_from_database(job=job)
         forms[LAUNCH].update_from_database(job=job)
 
     return forms
@@ -151,24 +152,6 @@ def filter_as_per_input(forms_to_save, request, job):
                 forms_to_save = [DATA_PARAMETER_SIMULATED, ]
         except DataSource.DoesNotExist:
             pass
-
-    # # returning the corrected forms need to be saved for DATA tab
-    # if DATA in forms_to_save:
-    #     data_choice = request.POST.get('data-data_choice', None)
-    #
-    #     if data_choice in DATA_SIMULATED:
-    #         forms_to_save = [DATA, DATA_SIMULATED, ]
-    #     else:
-    #         forms_to_save = [DATA, DATA_OPEN, ]
-    #
-    # # returning the corrected forms need to be saved for SIGNAL tab
-    # if SIGNAL in forms_to_save:
-    #     signal_choice = request.POST.get('signal-signal_choice', None)
-    #
-    #     if signal_choice == SKIP:
-    #         forms_to_save = [SIGNAL, ]
-    #     elif signal_choice in SIGNAL_PARAMETER_BBH:
-    #         forms_to_save = [SIGNAL, SIGNAL_PARAMETER_BBH, ]
 
     return forms_to_save
 

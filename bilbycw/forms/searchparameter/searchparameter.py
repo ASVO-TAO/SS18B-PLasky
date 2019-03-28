@@ -171,3 +171,23 @@ class SearchParameterForm(DynamicForm):
                     'value': value,
                 }
             )
+
+    def update_from_database(self, job):
+        """
+        Populates the form field with the values stored in the database
+        :param job: instance of job model for which the search parameters belong to
+        :return: Nothing
+        """
+
+        if not job:
+            return
+
+        # iterate over the fields
+        for name in FIELDS_PROPERTIES.keys():
+            try:
+                value = SearchParameter.objects.get(job=job, name=name).value
+                # set the field value
+                self.fields[name].initial = value
+
+            except SearchParameter.DoesNotExist:
+                continue
