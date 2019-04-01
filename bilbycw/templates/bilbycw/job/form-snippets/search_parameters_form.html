@@ -3,24 +3,47 @@
 
     <input type="hidden" name="form-tab" value="search-parameter"/>
 
-    {% for field in search_parameter_form %}
-        <div class="row field
-                    {% if field.field.required %}required{% endif %}
-                    {% if field.errors %}error{% endif %}
-                    div-{{ field.name }}">
-
-            <!-- Label -->
-            <label class="col col-lg-4 col-md-4 col-sm-6 col-sx-6 col-12 control-label" for="{{ field.auto_id }}">
-                {{ field.label }}
-            </label>
-
-            <!-- Field -->
-            <div class="col col-lg-8 col-md-8 col-sm-6 col-sx-6 col-12">
-                {{ field }}
-                {{ field.errors }}
-            </div>
-
+    {% if search_parameter_form.non_field_errors %}
+        <div class="non-field-error">
+            <ul class="errors">
+                {% for error in search_parameter_form.non_field_errors %}
+                    <li class="error">{{ error }}</li>
+                {% endfor %}
+            </ul>
         </div>
+    {% endif %}
+
+    {% for fieldset_name, fields in search_parameter_form.fieldsets.items %}
+        <!-- start fieldsets -->
+        {% if fields|length == 1 %}
+            {% for field_name in fields %}
+                {% for field in search_parameter_form %}
+                    {% if field_name == field.name %}
+                        {% include 'bilbycw/job/snippets/input_one.html' %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        {% elif fields|length == 3 %}
+            <div class="row">
+                <div class="col col-lg-4 col-md-4 col-sm-4 col-sx-4 col-4">{{ fieldset.title }}{{ fieldset_name }}</div>
+                <div class="col col-lg-8 col-md-8 col-sm-8 col-sx-8 col-8">
+                    <div class="row">
+
+                        {% for field_name in fields %}
+                            <div class="col col-lg-4 col-md-4 col-sm-4 col-sx-12 col-12">
+                                {% for field in search_parameter_form %}
+                                    {% if field_name == field.name %}
+                                        {% include 'bilbycw/job/snippets/input_three.html' %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <!-- end fieldsets -->
     {% endfor %}
 
     <div id="data-tab-navigation">
