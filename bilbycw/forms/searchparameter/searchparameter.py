@@ -4,6 +4,8 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 
 from collections import OrderedDict
 
+from django import forms
+
 from bilbycommon.forms.dynamic.form import DynamicForm
 from bilbycommon.forms.dynamic import field
 from bilbycommon.utility.display_names import (
@@ -11,7 +13,6 @@ from bilbycommon.utility.display_names import (
     FREQUENCY_DISPLAY,
     BAND,
     BAND_DISPLAY,
-    A0_SEARCH,
     A0_SEARCH_DISPLAY,
     A0_START_SEARCH,
     A0_START_SEARCH_DISPLAY,
@@ -19,7 +20,6 @@ from bilbycommon.utility.display_names import (
     A0_END_SEARCH_DISPLAY,
     A0_BINS_SEARCH,
     A0_BINS_SEARCH_DISPLAY,
-    ORBIT_TP_SEARCH,
     ORBIT_TP_SEARCH_DISPLAY,
     ORBIT_TP_START_SEARCH,
     ORBIT_TP_START_SEARCH_DISPLAY,
@@ -60,6 +60,7 @@ FIELDS_PROPERTIES = OrderedDict([
         'placeholder': '10.54',
         'initial': None,
         'required': True,
+        'help_text': 'For fixed value use this and leave others empty.',
     }),
     (A0_END_SEARCH, {
         'type': field.NON_NEGATIVE_FLOAT,
@@ -81,6 +82,7 @@ FIELDS_PROPERTIES = OrderedDict([
         'placeholder': '10.54',
         'initial': None,
         'required': True,
+        'help_text': 'For fixed value use this and leave others empty.',
     }),
     (ORBIT_TP_END_SEARCH, {
         'type': field.NON_NEGATIVE_FLOAT,
@@ -177,3 +179,60 @@ class SearchParameterForm(DynamicForm):
 
             except SearchParameter.DoesNotExist:
                 continue
+
+    def clean(self):
+        """
+        Checks the validation of the form. Usually checks the dependent fields like:
+        Start, End and Number of Bins.
+        :return:
+        """
+
+        if not self.fieldsets:
+            return
+
+        data = self.cleaned_data
+
+        # validating a0 fields
+        a0_start = data.get(A0_START_SEARCH, None)
+        a0_end = data.get(A0_END_SEARCH, None)
+        a0_bins = data.get(A0_BINS_SEARCH, None)
+
+        if not a0_end and not a0_bins:  # no problem, this is using fixed values
+            pass
+        elif not a0_end or not a0_bins:  # problem with the inputs, one of End or #Bins fields is left blank
+
+            # checking whether there are already errors for those fields, in such cases, we should not add more
+            # errors. For example: if the number of bins is not integer, that error is sufficient to stop the
+            # form to save the updated values in the database, we will not be showing up further errors until
+            # that is fixed. Similar applies for the End field
+            if not a0_end and A0_END_SEARCH not in self.errors.keys():
+                self.add_error(A0_END_SEARCH, forms.ValidationError('Required for range'))
+            if not a0_bins and A0_BINS_SEARCH not in self.errors.keys():
+                self.add_error(A0_BINS_SEARCH, forms.ValidationError('Required for range'))
+
+        elif a0_end <= a0_start:
+            self.add_error(A0_START_SEARCH, forms.ValidationError('Must be < End'))
+            self.add_error(A0_END_SEARCH, forms.ValidationError('Must be > Start'))
+
+        # validating orbitTp fields
+        orbit_tp_start = data.get(ORBIT_TP_START_SEARCH, None)
+        orbit_tp_end = data.get(ORBIT_TP_END_SEARCH, None)
+        orbit_tp_bins = data.get(ORBIT_TP_BINS_SEARCH, None)
+
+        if not orbit_tp_end and not orbit_tp_bins:  # no problem, this is using fixed values
+            pass
+        elif not orbit_tp_end or not orbit_tp_bins:  # problem with the inputs, one of End or #Bins fields is left blank
+
+            # checking whether there are already errors for those fields, in such cases, we should not add more
+            # errors. For example: if the number of bins is not integer, that error is sufficient to stop the
+            # form to save the updated values in the database, we will not be showing up further errors until
+            # that is fixed. Similar applies for the End field
+            if not orbit_tp_end and ORBIT_TP_END_SEARCH not in self.errors.keys():
+                self.add_error(ORBIT_TP_END_SEARCH, forms.ValidationError('Required for range'))
+
+            if not orbit_tp_bins and ORBIT_TP_BINS_SEARCH not in self.errors.keys():
+                self.add_error(ORBIT_TP_BINS_SEARCH, forms.ValidationError('Required for range'))
+
+        elif orbit_tp_end <= orbit_tp_start:
+            self.add_error(ORBIT_TP_START_SEARCH, forms.ValidationError('Must be < End'))
+            self.add_error(ORBIT_TP_END_SEARCH, forms.ValidationError('Must be > Start'))
