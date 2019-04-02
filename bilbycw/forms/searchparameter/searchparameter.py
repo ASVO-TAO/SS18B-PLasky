@@ -198,7 +198,16 @@ class SearchParameterForm(DynamicForm):
         a0_bins = data.get(A0_BINS_SEARCH, None)
 
         if not a0_end and not a0_bins:  # no problem, this is using fixed values
-            pass
+            add_required_to = []
+            if A0_END_SEARCH in self.errors.keys() and A0_BINS_SEARCH not in self.errors.keys():
+                add_required_to.append(A0_BINS_SEARCH)
+
+            if A0_BINS_SEARCH in self.errors.keys() and A0_END_SEARCH not in self.errors.keys():
+                add_required_to.append(A0_END_SEARCH)
+
+            for error_field in add_required_to:
+                self.add_error(error_field, forms.ValidationError('Required for range'))
+
         elif not a0_end or not a0_bins:  # problem with the inputs, one of End or #Bins fields is left blank
 
             # checking whether there are already errors for those fields, in such cases, we should not add more
@@ -219,8 +228,19 @@ class SearchParameterForm(DynamicForm):
         orbit_tp_end = data.get(ORBIT_TP_END_SEARCH, None)
         orbit_tp_bins = data.get(ORBIT_TP_BINS_SEARCH, None)
 
-        if not orbit_tp_end and not orbit_tp_bins:  # no problem, this is using fixed values
-            pass
+        if not orbit_tp_end and not orbit_tp_bins:
+            # no problems if both of them are empty. However, None will passed as cleaned data if there are errors
+            # in the field. In that case, to show up error in other field
+            add_required_to = []
+            if ORBIT_TP_BINS_SEARCH in self.errors.keys() and ORBIT_TP_END_SEARCH not in self.errors.keys():
+                add_required_to.append(ORBIT_TP_END_SEARCH)
+
+            if ORBIT_TP_END_SEARCH in self.errors.keys() and ORBIT_TP_BINS_SEARCH not in self.errors.keys():
+                add_required_to.append(ORBIT_TP_BINS_SEARCH)
+
+            for error_field in add_required_to:
+                self.add_error(error_field, forms.ValidationError('Required for range'))
+
         elif not orbit_tp_end or not orbit_tp_bins:  # problem with the inputs, one of End or #Bins fields is left blank
 
             # checking whether there are already errors for those fields, in such cases, we should not add more
