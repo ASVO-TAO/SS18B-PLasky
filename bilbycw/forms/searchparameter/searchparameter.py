@@ -197,7 +197,9 @@ class SearchParameterForm(DynamicForm):
         a0_end = data.get(A0_END_SEARCH, None)
         a0_bins = data.get(A0_BINS_SEARCH, None)
 
-        if not a0_end and not a0_bins:  # no problem, this is using fixed values
+        if not a0_end and not a0_bins:
+            # no problems if both of them are empty. However, None will passed as cleaned data if there are errors
+            # in the field. In that case, to show up error in other field
             add_required_to = []
             if A0_END_SEARCH in self.errors.keys() and A0_BINS_SEARCH not in self.errors.keys():
                 add_required_to.append(A0_BINS_SEARCH)
