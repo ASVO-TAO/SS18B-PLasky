@@ -7,16 +7,13 @@ import json
 from bilbycommon.utility.display_names import (
     REAL_DATA,
     FAKE_DATA,
+    A0_SEARCH_DISPLAY,
+    ORBIT_TP_SEARCH_DISPLAY,
 )
 from bilbycommon.utility.utils import (
     list_job_actions,
     generate_draft_job_name,
     find_display_name,
-)
-
-from bilbycommon.utility.display_names import (
-    A0_SEARCH_DISPLAY,
-    ORBIT_TP_SEARCH_DISPLAY,
 )
 
 from ..models import (
