@@ -7,13 +7,14 @@ import json
 from bilbycommon.utility.display_names import (
     REAL_DATA,
     FAKE_DATA,
-    A0_SEARCH_DISPLAY,
-    ORBIT_TP_SEARCH_DISPLAY,
+    A0_SEARCH,
+    ORBIT_TP_SEARCH,
 )
 from bilbycommon.utility.utils import (
     list_job_actions,
     generate_draft_job_name,
     find_display_name,
+    remove_suffix,
 )
 
 from ..models import (
@@ -162,7 +163,7 @@ class CWJob(object):
 
             # if the name is in the required list, we will be processing them for
             # related field using the innner method
-            if name in [A0_SEARCH_DISPLAY, ORBIT_TP_SEARCH_DISPLAY, ]:
+            if name in [A0_SEARCH, ORBIT_TP_SEARCH, ]:
                 value = _get_value(job=self.job)
 
             # otherwise we will be just adding the single field.
@@ -242,30 +243,27 @@ class CWJob(object):
         data_source_dict = dict()
         if self.data_source:
             data_source_dict.update({
-                'type': self.data_source.data_source,
+                'source': self.data_source.data_source,
             })
             for data_parameter in self.data_parameters:
                 data_source_dict.update({
-                    data_parameter.name: data_parameter.value,
+                    remove_suffix(data_parameter.name): data_parameter.value,
                 })
 
         # processing search parameter dict
         search_parameter_dict = dict()
-        search_parameter_dict.update({
-            'type': 'search_parameters',
-        })
 
         for search_parameter in list(self.search_parameters):
             search_parameter_dict.update({
-                search_parameter.name: search_parameter.value,
+                remove_suffix(search_parameter.name): search_parameter.value,
             })
 
         # accumulating all in one dict
         json_dict = dict(
             name=self.job.name,
             description=self.job.description,
-            data_source=data_source_dict,
-            search_parameters=search_parameter_dict,
+            datasource=data_source_dict,
+            search=search_parameter_dict,
         )
 
         # returning json with correct indentation

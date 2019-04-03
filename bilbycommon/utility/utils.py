@@ -183,3 +183,14 @@ def find_display_name(value):
         pass
 
     return DISPLAY_NAME_MAP.get(value, value)
+
+
+def remove_suffix(name):
+    """
+    Removes the suffix from the name of the parameters. For distinguishing purpose, some parameter names have suffix.
+    For example: psi___cw, starttime___cw. However, we don't want those in the json file.
+    This method removes any suffix like above.
+    :param name: String name of the parameter.
+    :return: json compatible name for a Job
+    """
+    return ''.join(name.split('___')[:-1]) if '___' in name else name
