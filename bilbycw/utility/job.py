@@ -62,9 +62,25 @@ class ParameterSimple(object):
     Class to represent a parameter with name and value pair
     """
 
-    def __init__(self, name, value):
+    def __init__(self, name, value, related_fields=None):
         self.name = name
         self.value = value
+        self.fields = related_fields
+        self._compute_json_value()
+
+    def _compute_json_value(self):
+        """
+        Computes json value for the parameter. If there is no related_fields that means it is a simple parameter, which
+        means that the json value would be the actual value. Otherwise for compound parameter, the json value might
+        differ from the display value. For example: orbitTp field in search parameter:
+            is displayed as: Start/Fixed: 4545.5, End: 7878.6, # Bins: 11
+            json requires: ["4545.5", "7878.6", "11"]
+        """
+        if not self.fields:
+            self.json_value = self.value
+        else:
+            if self.name in [A0_SEARCH, ORBIT_TP_SEARCH]:
+                self.json_value = [x.value for x in self.fields] if len(self.fields) > 1 else self.fields[0].value
 
     def display_string(self):
         """
@@ -124,36 +140,36 @@ class CWJob(object):
     def list_actions(self, user):
         self.job_actions = list_job_actions(self.job, user)
 
+    def _get_value(self, fields):
+        """
+        Generates a final value of related fields by combining them.
+        :param fields: list of fields
+        :return: String representing the combined value for the related fields.
+        """
+        related_fields = []
+        for field in fields:
+            try:
+                search_parameter = SearchParameter.objects.get(job=self.job, name=field)
+
+                # if there is a value, then we will include this, otherwise we don't need to include this
+                if search_parameter.value:
+                    related_fields.append(ParameterSimple(name=search_parameter.name, value=search_parameter.value))
+            except SearchParameter.DoesNotExist:
+                pass
+
+        # no value found for these fields
+        # this should not occur, however just checking
+        if not related_fields:
+            return None
+
+        # returning the formatted string
+        return ', '.join('{}'.format(x.display_string()) for x in related_fields), related_fields
+
     def _populate_search_parameters(self):
         """
         Populates the search parameters for a job.
         :return: list of search parameters.
         """
-
-        def _get_value(job):
-            """
-            Generates a final value of related fields by combining them.
-            :param job: job model instance
-            :return: String representing the combined value for the related fields.
-            """
-            related_fields = []
-            for field in fields:
-                try:
-                    search_parameter = SearchParameter.objects.get(job=job, name=field)
-
-                    # if there is a value, then we will include this, otherwise we don't need to include this
-                    if search_parameter.value:
-                        related_fields.append(ParameterSimple(name=search_parameter.name, value=search_parameter.value))
-                except SearchParameter.DoesNotExist:
-                    pass
-
-            # no value found for these fields
-            # this should not occur, however just for checking
-            if not related_fields:
-                return None
-
-            # returning the formatted string
-            return ', '.join('{}'.format(x.display_string()) for x in related_fields)
 
         # initialising the empty list
         search_parameters = []
@@ -161,10 +177,12 @@ class CWJob(object):
         # checking out the FIELDSET items for processing.
         for name, fields in SEARCH_PARAMETERS_FIELDSETS.items():
 
+            related_fields = None
+
             # if the name is in the required list, we will be processing them for
             # related field using the innner method
             if name in [A0_SEARCH, ORBIT_TP_SEARCH, ]:
-                value = _get_value(job=self.job)
+                value, related_fields = self._get_value(fields)
 
             # otherwise we will be just adding the single field.
             else:
@@ -175,7 +193,7 @@ class CWJob(object):
 
             # adding to the list iff there is a value.
             if value:
-                search_parameters.append(ParameterSimple(name=name, value=value))
+                search_parameters.append(ParameterSimple(name=name, value=value, related_fields=related_fields))
 
         return search_parameters
 
@@ -204,13 +222,19 @@ class CWJob(object):
             if self.data_source.data_source == REAL_DATA:
                 for name in REAL_DATA_FIELDS_PROPERTIES.keys():
                     try:
-                        self.data_parameters.append(all_data_parameters.get(name=name))
+                        data_parameter = all_data_parameters.get(name=name)
+                        self.data_parameters.append(
+                            ParameterSimple(name=data_parameter.name, value=data_parameter.value)
+                        )
                     except DataParameter.DoesNotExist:
                         continue
             elif self.data_source.data_source == FAKE_DATA:
                 for name in SIMULATED_DATA_FIELDS_PROPERTIES.keys():
                     try:
-                        self.data_parameters.append(all_data_parameters.get(name=name))
+                        data_parameter = all_data_parameters.get(name=name)
+                        self.data_parameters.append(
+                            ParameterSimple(name=data_parameter.name, value=data_parameter.value)
+                        )
                     except DataParameter.DoesNotExist:
                         continue
 
@@ -247,7 +271,7 @@ class CWJob(object):
             })
             for data_parameter in self.data_parameters:
                 data_source_dict.update({
-                    remove_suffix(data_parameter.name): data_parameter.value,
+                    remove_suffix(data_parameter.name): data_parameter.json_value,
                 })
 
         # processing search parameter dict
@@ -255,7 +279,7 @@ class CWJob(object):
 
         for search_parameter in list(self.search_parameters):
             search_parameter_dict.update({
-                remove_suffix(search_parameter.name): search_parameter.value,
+                remove_suffix(search_parameter.name): search_parameter.json_value,
             })
 
         # accumulating all in one dict
