@@ -2,11 +2,10 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
-import ast
-
 from django import template
 
-from bilbycommon.utility.display_names import *
+from ..utility.display_names import *
+from ..utility.utils import find_display_name
 
 register = template.Library()
 
@@ -26,20 +25,13 @@ def uniform(value):
 @register.filter(name='display_name')
 def display_name(value):
     """
-    Find and return the display name that corresponds the value
-    :param value: String of the name
-    :return: Display name or names separated by comma if a list
+    Finding the display name for displaying in the UI.
+    :param value: value for what display name will be searched.
+    :return: display name of the value
     """
 
-    # displaying array (for detector choice at this moment)
-    try:
-        value_list = ast.literal_eval(value)
-        display_list = [DISPLAY_NAME_MAP.get(x, x) for x in value_list]
-        return ', '.join(display_list)
-    except (ValueError, TypeError, SyntaxError):
-        pass
-
-    return DISPLAY_NAME_MAP.get(value, value)
+    # calling a utility function that does the same
+    return find_display_name(value)
 
 
 @register.filter(name='status_color')

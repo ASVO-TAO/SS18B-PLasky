@@ -2,6 +2,7 @@
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
+import ast
 import uuid
 
 from ..models import JobCommon
@@ -18,6 +19,7 @@ from .display_names import (
     WALL_TIME_EXCEEDED,
     OUT_OF_MEMORY,
     PUBLIC,
+    DISPLAY_NAME_MAP,
 )
 
 # Units of file size
@@ -141,7 +143,12 @@ def list_job_actions(job, user):
 
 
 def generate_draft_job_name(job, user):
-
+    """
+    Generates draft job name for a Job by checking existing user, job constraint to prevent database failure.
+    :param job: Job model instance
+    :param user: user instance
+    :return:
+    """
     if not job:
         return None
 
@@ -156,3 +163,23 @@ def generate_draft_job_name(job, user):
         if name == job.name:
             # cannot generate a new name, returning none
             return None
+
+    return name
+
+
+def find_display_name(value):
+    """
+    Find and return the display name that corresponds the value
+    :param value: String of the name
+    :return: Display name or names separated by comma if a list
+    """
+
+    # displaying array (for detector choice at this moment)
+    try:
+        value_list = ast.literal_eval(value)
+        display_list = [DISPLAY_NAME_MAP.get(x, x) for x in value_list]
+        return ', '.join(display_list)
+    except (ValueError, TypeError, SyntaxError):
+        pass
+
+    return DISPLAY_NAME_MAP.get(value, value)

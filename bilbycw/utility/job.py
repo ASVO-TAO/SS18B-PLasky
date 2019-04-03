@@ -11,6 +11,12 @@ from bilbycommon.utility.display_names import (
 from bilbycommon.utility.utils import (
     list_job_actions,
     generate_draft_job_name,
+    find_display_name,
+)
+
+from bilbycommon.utility.display_names import (
+    A0_SEARCH_DISPLAY,
+    ORBIT_TP_SEARCH_DISPLAY,
 )
 
 from ..models import (
@@ -20,6 +26,7 @@ from ..models import (
     DataParameter,
 )
 
+from ..forms.searchparameter.searchparameter import FIELDSETS as SEARCH_PARAMETERS_FIELDSETS
 from ..forms.dataparameter.real import FIELDS_PROPERTIES as REAL_DATA_FIELDS_PROPERTIES
 from ..forms.dataparameter.simulated import FIELDS_PROPERTIES as SIMULATED_DATA_FIELDS_PROPERTIES
 
@@ -50,6 +57,24 @@ def clone_job_data(from_job, to_job):
                 name=data_parameter.name,
                 value=data_parameter.value,
             )
+
+
+class ParameterSimple(object):
+    """
+    Class to represent a parameter with name and value pair
+    """
+
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+    def display_string(self):
+        """
+        Formats the string representation of the name value pair as follows for displaying purpose
+            : display_name of name: display name of value
+        :return: formatted string
+        """
+        return '{name}: {value}'.format(name=find_display_name(self.name), value=find_display_name(self.value))
 
 
 class CWJob(object):
@@ -101,6 +126,61 @@ class CWJob(object):
     def list_actions(self, user):
         self.job_actions = list_job_actions(self.job, user)
 
+    def _populate_search_parameters(self):
+        """
+        Populates the search parameters for a job.
+        :return: list of search parameters.
+        """
+
+        def _get_value(job):
+            """
+            Generates a final value of related fields by combining them.
+            :param job: job model instance
+            :return: String representing the combined value for the related fields.
+            """
+            related_fields = []
+            for field in fields:
+                try:
+                    search_parameter = SearchParameter.objects.get(job=job, name=field)
+
+                    # if there is a value, then we will include this, otherwise we don't need to include this
+                    if search_parameter.value:
+                        related_fields.append(ParameterSimple(name=search_parameter.name, value=search_parameter.value))
+                except SearchParameter.DoesNotExist:
+                    pass
+
+            # no value found for these fields
+            # this should not occur, however just for checking
+            if not related_fields:
+                return None
+
+            # returning the formatted string
+            return ', '.join('{}'.format(x.display_string()) for x in related_fields)
+
+        # initialising the empty list
+        search_parameters = []
+
+        # checking out the FIELDSET items for processing.
+        for name, fields in SEARCH_PARAMETERS_FIELDSETS.items():
+
+            # if the name is in the required list, we will be processing them for
+            # related field using the innner method
+            if name in [A0_SEARCH_DISPLAY, ORBIT_TP_SEARCH_DISPLAY, ]:
+                value = _get_value(job=self.job)
+
+            # otherwise we will be just adding the single field.
+            else:
+                try:
+                    value = SearchParameter.objects.get(job=self.job, name=fields[0]).value
+                except SearchParameter.DoesNotExist:
+                    value = None
+
+            # adding to the list iff there is a value.
+            if value:
+                search_parameters.append(ParameterSimple(name=name, value=value))
+
+        return search_parameters
+
     def __init__(self, job_id, light=False):
         """
         Initialises the Bilby BilbyCWJob
@@ -136,8 +216,9 @@ class CWJob(object):
                     except DataParameter.DoesNotExist:
                         continue
 
-        # populating search parameters tab information
-        self.search_parameters = SearchParameter.objects.filter(job=self.job)
+        # populating search parameters tab information, we cannot use the direct model instances here because few of
+        # them are dependent fields that need to be displayed together under a same name.
+        self.search_parameters = self._populate_search_parameters()
 
     def __new__(cls, *args, **kwargs):
         """
@@ -176,7 +257,8 @@ class CWJob(object):
         search_parameter_dict.update({
             'type': 'search_parameters',
         })
-        for search_parameter in self.search_parameters:
+
+        for search_parameter in list(self.search_parameters):
             search_parameter_dict.update({
                 search_parameter.name: search_parameter.value,
             })
