@@ -42,10 +42,10 @@ from bilbycommon.utility.display_names import (
     START_TIME_CW_DISPLAY,
     DURATION,
     DURATION_DISPLAY,
-    HANFORD,
-    HANFORD_DISPLAY,
-    LIVINGSTON,
-    LIVINGSTON_DISPLAY,
+    H1,
+    H1_DISPLAY,
+    L1,
+    L1_DISPLAY,
     FAKE_DATA,
 )
 
@@ -55,8 +55,8 @@ from ...models import (
 )
 
 IFO_CHOICES = [
-    (HANFORD, HANFORD_DISPLAY),
-    (LIVINGSTON, LIVINGSTON_DISPLAY),
+    (H1, H1_DISPLAY),
+    (L1, L1_DISPLAY),
 ]
 
 FIELDS_PROPERTIES = OrderedDict([
