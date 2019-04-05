@@ -41,7 +41,7 @@ def clone_job_data(from_job, to_job):
         from_data_source = DataSource.objects.get(job=from_job)
         data_source_created = DataSource.objects.create(
             job=to_job,
-            data_source=from_data_source.data_choice,
+            data_source=from_data_source.data_source,
         )
     except DataSource.DoesNotExist:
         pass
@@ -54,6 +54,16 @@ def clone_job_data(from_job, to_job):
                 data_source=data_source_created,
                 name=data_parameter.name,
                 value=data_parameter.value,
+            )
+
+        # creating the search parameters
+        search_parameters = SearchParameter.objects.filter(job=from_job)
+
+        for search_parameter in search_parameters:
+            SearchParameter.objects.create(
+                job=to_job,
+                name=search_parameter.name,
+                value=search_parameter.value,
             )
 
 
