@@ -160,7 +160,7 @@ class CWJob(object):
         # no value found for these fields
         # this should not occur, however just checking
         if not related_fields:
-            return None
+            return None, None
 
         # returning the formatted string
         return ', '.join('{}'.format(x.display_string()) for x in related_fields), related_fields
