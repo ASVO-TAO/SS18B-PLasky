@@ -1,7 +1,7 @@
 """
 Distributed under the MIT License. See LICENSE.txt for more info.
 """
-
+import ast
 import json
 
 from bilbycommon.utility.display_names import (
@@ -22,6 +22,9 @@ from ..models import (
     DataSource,
     SearchParameter,
     DataParameter,
+    EngineParameter,
+    ViterbiParameter,
+    OutputParameter,
 )
 
 from ..forms.searchparameter.searchparameter import FIELDSETS as SEARCH_PARAMETERS_FIELDSETS
@@ -87,7 +90,14 @@ class ParameterSimple(object):
             json requires: ["4545.5", "7878.6", "11"]
         """
         if not self.fields:
-            self.json_value = self.value
+            # handling an exception case:
+            # for the parameter 'capture' in 'output', it is to be a list instead of the a single value
+            # however, at this moment, there is no input taking from the user, so json conversion has been
+            # made here. Otherwise, could follow the IFO style in Simulated data parameter
+            if self.name in ['capture', ]:
+                self.json_value = ast.literal_eval(self.value)
+            else:
+                self.json_value = self.value
         else:
             if self.name in [A0_SEARCH, ORBIT_TP_SEARCH]:
                 self.json_value = [x.value for x in self.fields] if len(self.fields) > 1 else self.fields[0].value
@@ -114,11 +124,20 @@ class CWJob(object):
     # variable to hold the DataSource model instance
     data_source = None
 
-    # list to hold the Data Parameters instances
+    # list to hold the Data Parameters
     data_parameters = None
 
-    # list to hold the Search Parameters instances
+    # list to hold the Search Parameters
     search_parameters = None
+
+    # list to hold the Engine Parameters
+    engine_parameters = None
+
+    # list to hold the Viterbi Parameters
+    viterbi_parameters = None
+
+    # list to hold the Output Parameters
+    output_parameters = None
 
     # what actions a user can perform on this job
     job_actions = None
@@ -252,6 +271,42 @@ class CWJob(object):
         # them are dependent fields that need to be displayed together under a same name.
         self.search_parameters = self._populate_search_parameters()
 
+        # populating the engine parameters
+        try:
+            engine_parameters = EngineParameter.objects.filter(job=self.job)
+        except EngineParameter.DoesNotExist:
+            pass
+        else:
+            self.engine_parameters = []
+            for engine_parameter in engine_parameters:
+                self.engine_parameters.append(
+                    ParameterSimple(name=engine_parameter.name, value=engine_parameter.value)
+                )
+
+        # populating the viterbi parameters
+        try:
+            viterbi_parameters = ViterbiParameter.objects.filter(job=self.job)
+        except ViterbiParameter.DoesNotExist:
+            pass
+        else:
+            self.viterbi_parameters = []
+            for viterbi_parameter in viterbi_parameters:
+                self.viterbi_parameters.append(
+                    ParameterSimple(name=viterbi_parameter.name, value=viterbi_parameter.value)
+                )
+
+        # populating the output parameters
+        try:
+            output_parameters = OutputParameter.objects.filter(job=self.job)
+        except OutputParameter.DoesNotExist:
+            pass
+        else:
+            self.output_parameters = []
+            for output_parameter in output_parameters:
+                self.output_parameters.append(
+                    ParameterSimple(name=output_parameter.name, value=output_parameter.value)
+                )
+
     def __new__(cls, *args, **kwargs):
         """
         Instantiate the BilbyCWJob
@@ -292,12 +347,39 @@ class CWJob(object):
                 remove_suffix(search_parameter.name): search_parameter.json_value,
             })
 
+        # processing engine parameter dict
+        engine_parameter_dict = dict()
+
+        for engine_parameter in list(self.engine_parameters):
+            engine_parameter_dict.update({
+                remove_suffix(engine_parameter.name): engine_parameter.json_value,
+            })
+
+        # processing viterbi parameter dict
+        viterbi_parameter_dict = dict()
+
+        for viterbi_parameter in list(self.viterbi_parameters):
+            viterbi_parameter_dict.update({
+                remove_suffix(viterbi_parameter.name): viterbi_parameter.json_value,
+            })
+
+        # processing output parameter dict
+        output_parameter_dict = dict()
+
+        for output_parameter in list(self.output_parameters):
+            output_parameter_dict.update({
+                remove_suffix(output_parameter.name): output_parameter.json_value,
+            })
+
         # accumulating all in one dict
         json_dict = dict(
             name=self.job.name,
             description=self.job.description,
             datasource=data_source_dict,
+            engine=engine_parameter_dict,
+            viterbi=viterbi_parameter_dict,
             search=search_parameter_dict,
+            output=output_parameter_dict,
         )
 
         # returning json with correct indentation

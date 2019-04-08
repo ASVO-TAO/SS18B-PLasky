@@ -6,6 +6,9 @@ from .models import (
     DataSource,
     DataParameter,
     SearchParameter,
+    EngineParameter,
+    ViterbiParameter,
+    OutputParameter,
 )
 
 
@@ -41,5 +44,23 @@ class DataParameter(admin.ModelAdmin):
 
 @admin.register(SearchParameter)
 class SearchParameter(admin.ModelAdmin):
+    list_display = ('job', 'name', 'value')
+    search_fields = ['job__name', 'job__user__username', 'name', 'value', ]
+
+
+@admin.register(EngineParameter)
+class EngineParameter(admin.ModelAdmin):
+    list_display = ('job', 'name', 'value')
+    search_fields = ['job__name', 'job__user__username', 'name', 'value', ]
+
+
+@admin.register(ViterbiParameter)
+class ViterbiParameter(admin.ModelAdmin):
+    list_display = ('job', 'name', 'value')
+    search_fields = ['job__name', 'job__user__username', 'name', 'value', ]
+
+
+@admin.register(OutputParameter)
+class OutputParameter(admin.ModelAdmin):
     list_display = ('job', 'name', 'value')
     search_fields = ['job__name', 'job__user__username', 'name', 'value', ]

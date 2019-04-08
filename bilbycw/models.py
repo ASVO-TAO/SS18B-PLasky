@@ -115,3 +115,39 @@ class SearchParameter(models.Model):
 
     def __str__(self):
         return '{} - {} ({})'.format(self.name, self.value, self.job)
+
+
+class EngineParameter(models.Model):
+    """
+    Model to Store Engine Parameters.
+    """
+    job = models.ForeignKey(BilbyCWJob, on_delete=models.CASCADE)
+    name = models.CharField(max_length=55, blank=False, null=False)
+    value = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return '{} - {} ({})'.format(self.name, self.value, self.job)
+
+
+class ViterbiParameter(models.Model):
+    """
+    Model to Store Viterbi Parameters.
+    """
+    job = models.ForeignKey(BilbyCWJob, on_delete=models.CASCADE)
+    name = models.CharField(max_length=55, blank=False, null=False)
+    value = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return '{} - {} ({})'.format(self.name, self.value, self.job)
+
+
+class OutputParameter(models.Model):
+    """
+    Model to Store Output Parameters.
+    """
+    job = models.ForeignKey(BilbyCWJob, on_delete=models.CASCADE)
+    name = models.CharField(max_length=55, blank=False, null=False)
+    value = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        return '{} - {} ({})'.format(self.name, self.value, self.job)
