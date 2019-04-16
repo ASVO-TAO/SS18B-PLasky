@@ -357,9 +357,11 @@ def view_job(request, job_id):
             if 'copy' not in bilby_job.job_actions:
                 job = None
             else:
-                # create a bilby_job instance of the job
-                bilby_job = PEJob(job_id=job.id)
-                bilby_job.list_actions(request.user)
+                # create a full bilby_job instance of the job
+                if type(bilby_job) == CWJob:
+                    bilby_job = CWJob(job_id=job_id)
+                elif type(bilby_job) == PEJob:
+                    bilby_job = PEJob(job_id=job.id)
 
                 # Empty parameter dict to pass to template
                 job_data = {
@@ -446,10 +448,10 @@ def copy_job(request, job_id):
                 # create a full bilby_job instance of the job
                 # but not sure whether it is required for copying, because, we just need the job id for copying
                 # so, for the time being, it is commented out, otherwise, we can always reopen it.
-                if type(bilby_job) == CWJob:
-                    bilby_job = CWJob(job_id=job_id)
-                elif type(bilby_job) == PEJob:
-                    bilby_job = PEJob(job_id=job.id)
+                # if type(bilby_job) == CWJob:
+                #     bilby_job = CWJob(job_id=job_id)
+                # elif type(bilby_job) == PEJob:
+                #     bilby_job = PEJob(job_id=job.id)
 
                 job = bilby_job.clone_as_draft(request.user)
                 if not job:
