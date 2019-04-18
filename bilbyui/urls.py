@@ -33,4 +33,4 @@ urlpatterns = [
     )
 ]
 
-handler404 = 'bilbyweb.views.common.error_404_view'
+handler404 = 'bilbycommon.views.common.error_404_view'
