@@ -12,17 +12,15 @@ from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.decorators import admin_or_system_admin_required
-from bilbycommon.utility.constants import JOBS_PER_PAGE
-from bilbycommon.utility.display_names import (
+from ..utility.constants import JOBS_PER_PAGE
+from ..utility.display_names import (
     DRAFT,
     PUBLIC,
     NONE,
     PARAMETER_ESTIMATION,
     CONTINUOUS_WAVE,
 )
-from bilbycommon.utility.utils import get_readable_size
-from bilbycw.utility.job import CWJob
-from bilbyweb.utility.job import PEJob
+
 from ..models import JobCommon, JobStatus
 
 logger = logging.getLogger(__name__)
@@ -343,7 +341,7 @@ def view_job(request, job_id):
     job = None
 
     # checking:
-    # 1. BilbyPEJob ID and job exists
+    # 1. Bilby Job ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -356,68 +354,19 @@ def view_job(request, job_id):
 
             if 'copy' not in bilby_job.job_actions:
                 job = None
-            else:
-                # create a full bilby_job instance of the job
-                if type(bilby_job) == CWJob:
-                    bilby_job = CWJob(job_id=job_id)
-                elif type(bilby_job) == PEJob:
-                    bilby_job = PEJob(job_id=job.id)
-
-                # Empty parameter dict to pass to template
-                job_data = {
-                    'L1': None,
-                    'V1': None,
-                    'H1': None,
-                    'corner': None,
-                    'archive': None,
-                    # for drafts there are no clusters assigned, so bilby_job.job.custer is None for them
-                    'is_online': bilby_job.job.cluster is not None and bilby_job.job.cluster.is_connected() is not None
-                }
-
-                # Check if the cluster is online
-                if job_data['is_online']:
-                    try:
-                        # Get the output file list for this job
-                        result = bilby_job.job.fetch_remote_file_list(path="/", recursive=True)
-                        # Waste the message id
-                        result.pop_uint()
-                        # Iterate over each file
-                        num_entries = result.pop_uint()
-                        for _ in range(num_entries):
-                            path = result.pop_string()
-                            # Waste the is_file bool
-                            result.pop_bool()
-                            # Waste the file size
-                            size = get_readable_size(result.pop_ulong())
-
-                            # Check if this is a wanted file
-                            if 'output/L1_frequency_domain_data.png' in path:
-                                job_data['L1'] = {'path': path, 'size': size}
-                            if 'output/V1_frequency_domain_data.png' in path:
-                                job_data['V1'] = {'path': path, 'size': size}
-                            if 'output/H1_frequency_domain_data.png' in path:
-                                job_data['H1'] = {'path': path, 'size': size}
-                            if 'output/bilby_corner.png' in path:
-                                job_data['corner'] = {'path': path, 'size': size}
-                            if 'bilby_job_{}.tar.gz'.format(bilby_job.job.id) in path:
-                                job_data['archive'] = {'path': path, 'size': size}
-                    except:
-                        job_data['is_online'] = False
-
-                return render(
-                    request,
-                    "bilbyweb/job/view_job.html",
-                    {
-                        'bilby_job': bilby_job,
-                        'job_data': job_data
-                    }
-                )
         except JobCommon.DoesNotExist:
             pass
 
     if not job:
         # should return to a page notifying that no permission to view
         raise Http404
+
+    if job.job_type == PARAMETER_ESTIMATION:
+        return redirect('view_pe_job', job_id)
+    elif job.job_type == CONTINUOUS_WAVE:
+        return redirect('view_cw_job', job_id)
+    else:
+        return redirect('/')
 
 
 @login_required
@@ -432,7 +381,7 @@ def copy_job(request, job_id):
     job = None
 
     # checking:
-    # 1. BilbyPEJob ID and job exists
+    # 1. Bilby Job ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -470,9 +419,9 @@ def copy_job(request, job_id):
         # loading job as draft and redirecting to the new job view
         request.session['to_load'] = job.as_json()
 
-    if job and job.job_type == PARAMETER_ESTIMATION:
+    if job.job_type == PARAMETER_ESTIMATION:
         return redirect('new_pe_job')
-    elif job and job.job_type == CONTINUOUS_WAVE:
+    elif job.job_type == CONTINUOUS_WAVE:
         return redirect('new_cw_job')
     else:
         return redirect('/')
@@ -490,7 +439,7 @@ def edit_job(request, job_id):
     job = None
 
     # checking:
-    # 1. BilbyPEJob ID and job exists
+    # 1. Bilby Job ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -514,9 +463,9 @@ def edit_job(request, job_id):
         # loading job as draft and redirecting to the new job view
         request.session['to_load'] = job.as_json()
 
-    if job and job.job_type == PARAMETER_ESTIMATION:
+    if job.job_type == PARAMETER_ESTIMATION:
         return redirect('new_pe_job')
-    elif job and job.job_type == CONTINUOUS_WAVE:
+    elif job.job_type == CONTINUOUS_WAVE:
         return redirect('new_cw_job')
     else:
         return redirect('/')
@@ -538,7 +487,7 @@ def cancel_job(request, job_id):
     to_page = 'jobs'
 
     # checking:
-    # 1. BilbyPEJob ID and job exists
+    # 1. Bilby Job ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -599,7 +548,7 @@ def delete_job(request, job_id):
     to_page = 'drafts'
 
     # checking:
-    # 1. BilbyPEJob ID and job exists
+    # 1. Bilby Job ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -612,7 +561,7 @@ def delete_job(request, job_id):
                 should_redirect = False
             else:
 
-                message = 'BilbyPEJob <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
+                message = 'Bilby Job <strong>{name}</strong> has been successfully deleted'.format(name=job.name)
 
                 if job.status == DRAFT:
 
@@ -684,7 +633,7 @@ def make_job_private(request, job_id):
     should_redirect = False
 
     # checking:
-    # 1. BilbyPEJob ID and job exists
+    # 1. Bilby Job ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -698,7 +647,7 @@ def make_job_private(request, job_id):
                 job.save()
 
                 should_redirect = True
-                messages.success(request, 'BilbyPEJob has been changed to <strong>private!</strong>', extra_tags='safe')
+                messages.success(request, 'Bilby Job has been changed to <strong>private!</strong>', extra_tags='safe')
 
         except JobCommon.DoesNotExist:
             pass
@@ -731,7 +680,7 @@ def make_job_public(request, job_id):
     should_redirect = False
 
     # checking:
-    # 1. BilbyPEJob ID and job exists
+    # 1. Bilby Job ID and job exists
     if job_id:
         try:
             job = JobCommon.objects.get(id=job_id)
@@ -745,7 +694,7 @@ def make_job_public(request, job_id):
                 job.save()
 
                 should_redirect = True
-                messages.success(request, 'BilbyPEJob has been changed to <strong>public!</strong>', extra_tags='safe')
+                messages.success(request, 'Bilby Job has been changed to <strong>public!</strong>', extra_tags='safe')
 
         except JobCommon.DoesNotExist:
             pass

@@ -7,11 +7,11 @@ from django.shortcuts import render, redirect
 
 from bilbycommon.utility.utils import get_to_be_active_tab
 from bilbycommon.utility.display_names import SKIP
-from ...utility.job import PEJob
-from ...models import (
+from ..utility.job import PEJob
+from ..models import (
     BilbyPEJob,
 )
-from ...utility.constants import (
+from ..utility.constants import (
     START,
     DATA,
     DATA_OPEN,

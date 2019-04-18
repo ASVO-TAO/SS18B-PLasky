@@ -6,11 +6,11 @@ import logging
 
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 
 from bilbycommon.utility.utils import get_readable_size
-from bilbyweb.utility.job import PEJob
-from ...models import BilbyPEJob
+from ..utility.job import PEJob
+from ..models import BilbyPEJob
 
 logger = logging.getLogger(__name__)
 
@@ -130,41 +130,3 @@ def view_job(request, job_id):
     if not job:
         # should return to a page notifying that no permission to view
         raise Http404
-
-
-@login_required
-def edit_job(request, job_id):
-    """
-    Checks job permission for edit and then redirects to relevant view.
-    :param request: Django request object.
-    :param job_id: id of the job.
-    :return: Redirects to relevant view.
-    """
-
-    job = None
-
-    # checking:
-    # 1. BilbyPEJob ID and job exists
-    if job_id:
-        try:
-            job = BilbyPEJob.objects.get(id=job_id)
-
-            # Checks the edit permission for the user
-            bilby_job = job.bilby_job
-            bilby_job.list_actions(request.user)
-
-            if 'edit' not in bilby_job.job_actions:
-                job = None
-        except BilbyPEJob.DoesNotExist:
-            pass
-
-    # this should be the last line before redirect
-    if not job:
-        # should return to a page notifying that no permission to edit
-        raise Http404
-    else:
-
-        # loading job as draft and redirecting to the new job view
-        request.session['to_load'] = job.as_json()
-
-    return redirect('new_job')

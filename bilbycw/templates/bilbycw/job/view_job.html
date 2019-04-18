@@ -85,14 +85,14 @@
         </div>
         <div class="body">
             <div id="accordion">
-                {% if bilby_job.data %}
+                {% if bilby_job.data_source %}
                     <div class="card">
                         <div class="card-header" id="headingData">
                             <h5 class="mb-0">
                                 <button class="btn btn-link collapsed" data-toggle="collapse"
                                         data-target="#collapseData"
                                         aria-expanded="true" aria-controls="collapseTwo">
-                                    Data
+                                    Data source and parameters
                                 </button>
                             </h5>
                         </div>
@@ -102,8 +102,8 @@
                                 <table class="table table-striped">
                                     <tbody>
                                     <tr>
-                                        <th scope="row">Data Type</th>
-                                        <td>{{ bilby_job.data.data_choice | display_name }}</td>
+                                        <th scope="row">Data source</th>
+                                        <td>{{ bilby_job.data_source.data_source | display_name }}</td>
                                     </tr>
                                     {% if bilby_job.data_parameters %}
                                         {% for data_parameter in bilby_job.data_parameters %}
@@ -119,96 +119,28 @@
                         </div>
                     </div>
                 {% endif %}
-                {% if bilby_job.signal and bilby_job.signal.signal_choice != 'skip' %}
+                {% if bilby_job.search_parameters %}
                     <div class="card">
-                        <div class="card-header" id="headingSignal">
+                        <div class="card-header" id="headingSearch">
                             <h5 class="mb-0">
                                 <button class="btn btn-link collapsed" data-toggle="collapse"
-                                        data-target="#collapseSignal"
+                                        data-target="#collapseSearch"
                                         aria-expanded="true" aria-controls="collapseTwo">
-                                    Signal
+                                    Search parameters
                                 </button>
                             </h5>
                         </div>
-                        <div id="collapseSignal" class="collapse" aria-labelledby="headingSignal"
+                        <div id="collapseSearch" class="collapse" aria-labelledby="headingSearch"
                              data-parent="#accordion">
                             <div class="card-body">
                                 <table class="table table-striped">
                                     <tbody>
-                                    <tr>
-                                        <th scope="row">Signal Injection</th>
-                                        <td>{{ bilby_job.signal.signal_choice | display_name }}</td>
-                                    </tr>
-                                    {% if bilby_job.signal_parameters %}
-                                        {% for signal_parameters in bilby_job.signal_parameters %}
-                                            <tr>
-                                                <th scope="row">{{ signal_parameters.name | display_name }}</th>
-                                                <td>{{ signal_parameters.value | display_name }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% endif %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-                {% if bilby_job.priors %}
-                    <div class="card">
-                        <div class="card-header" id="headingPrior">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link collapsed" data-toggle="collapse"
-                                        data-target="#collapsePrior"
-                                        aria-expanded="true" aria-controls="collapseTwo">
-                                    Priors
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="collapsePrior" class="collapse" aria-labelledby="headingPrior"
-                             data-parent="#accordion">
-                            <div class="card-body">
-                                <table class="table table-striped">
-                                    <tbody>
-                                    {% for prior in bilby_job.priors %}
+                                    {% for search_parameter in bilby_job.search_parameters %}
                                         <tr>
-                                            <th scope="row">{{ prior.name | display_name }}</th>
-                                            <td>{{ prior.prior_choice | display_name }}: {{ prior.get_display_value }}</td>
+                                            <th scope="row">{{ search_parameter.name | display_name }}</th>
+                                            <td>{{ search_parameter.value | display_name }}</td>
                                         </tr>
                                     {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-                {% if bilby_job.sampler %}
-                    <div class="card">
-                        <div class="card-header" id="headingSampler">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link collapsed" data-toggle="collapse"
-                                        data-target="#collapseSampler"
-                                        aria-expanded="true" aria-controls="collapseTwo">
-                                    Sampler
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="collapseSampler" class="collapse" aria-labelledby="headingSampler"
-                             data-parent="#accordion">
-                            <div class="card-body">
-                                <table class="table table-striped">
-                                    <tbody>
-                                    <tr>
-                                        <th scope="row">Sampler Type</th>
-                                        <td>{{ bilby_job.sampler.sampler_choice | display_name }}</td>
-                                    </tr>
-                                    {% if bilby_job.sampler_parameters %}
-                                        {% for sampler_parameters in bilby_job.sampler_parameters %}
-                                            <tr>
-                                                <th scope="row">{{ sampler_parameters.name | display_name }}</th>
-                                                <td>{{ sampler_parameters.value | display_name }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% endif %}
                                     </tbody>
                                 </table>
                             </div>
