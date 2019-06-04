@@ -97,7 +97,16 @@ class ParameterSimple(object):
             if self.name in ['capture', ]:
                 self.json_value = ast.literal_eval(self.value)
             else:
-                self.json_value = self.value
+                try:
+                    # Try converting the json string to an object first. This will prevent
+                    # accidentally passing a string representation of the object through
+                    # instead of the object itself.
+                    self.json_value = json.loads(self.value.replace("\'", "\""))
+                except json.decoder.JSONDecodeError:
+                    # If converting the json string to an object/native type didn't work
+                    # then simply fall back to the json string since it's probably a string
+                    # or other native json type that can't be parsed as an object
+                    self.json_value = self.value
         else:
             if self.name in [A0_SEARCH, ORBIT_TP_SEARCH]:
                 self.json_value = [x.value for x in self.fields] if len(self.fields) > 1 else self.fields[0].value
