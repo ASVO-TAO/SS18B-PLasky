@@ -48,7 +48,7 @@ def update_non_form_parameters(instance, **kwargs):
             job=instance,
             name='driftTime',
             defaults={
-                'value': '10d',
+                'value': '1d',
             }
         )
         OutputParameter.objects.update_or_create(

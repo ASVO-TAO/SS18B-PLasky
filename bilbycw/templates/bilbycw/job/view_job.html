@@ -7,53 +7,33 @@
         <div class="job-view-section">
             <div class="row">
                 <div class="col col-md-12">
-                    <div class="heading">Outputs &#38; Download Options</div>
+                    <div class="heading">Outputs Images</div>
                 </div>
             </div>
             <div class="body preview">
                 {% if job_data.is_online %}
                     <ul>
-                        {% if job_data.H1 %}
+                        {% for image in job_data.images %}
                             <li class="card text-center">
                                 <img class="card-img-top"
-                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.H1.path %}"
+                                     src="{% url 'download_asset' bilby_job.job.id 0 image.path %}"
                                      alt="Hanford Detector Frequency Domain Data">
                                 <div class="card-body">
-                                    <p class="card-text">Hanford Detector Frequency Domain Data</p>
+                                    <p class="card-text">{{ image.path }}</p>
                                 </div>
                             </li>
-                        {% endif %}
-                        {% if job_data.L1 %}
-                            <li class="card text-center">
-                                <img class="card-img-top"
-                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.L1.path %}"
-                                     alt="Livingston Detector Frequency Domain Data">
-                                <div class="card-body">
-                                    <p class="card-text">Livingston Detector Frequency Domain Data</p>
-                                </div>
-                            </li>
-                        {% endif %}
-                        {% if job_data.V1 %}
-                            <li class="card text-center">
-                                <img class="card-img-top"
-                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.V1.path %}"
-                                     alt="Virgo Detector Frequency Domain Data">
-                                <div class="card-body">
-                                    <p class="card-text">Virgo Detector Frequency Domain Data</p>
-                                </div>
-                            </li>
-                        {% endif %}
-                        {% if job_data.corner %}
-                            <li class="card text-center">
-                                <img class="card-img-top"
-                                     src="{% url 'download_asset' bilby_job.job.id 0 job_data.corner.path %}"
-                                     alt="Corner Data">
-                                <div class="card-body">
-                                    <p class="card-text">Corner Data</p>
-                                </div>
-                            </li>
-                        {% endif %}
-
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col col-md-12">
+                    <div class="heading">Output Results</div>
+                </div>
+            </div>
+            <div class="body preview">
+                {% if job_data.is_online %}
+                    <ul>
                         {% if job_data.archive %}
                             <li class="card text-center">
                                 <a href="{% url 'download_asset' bilby_job.job.id 1 job_data.archive.path %}">
@@ -66,6 +46,21 @@
                                 </a>
                             </li>
                         {% endif %}
+
+                        <ul>
+                            {% for result in job_data.results %}
+                                <li class="card text-center">
+                                    <a href="{% url 'download_asset' bilby_job.job.id 1 result.path %}">
+                                        <img class="card-img-top"
+                                            src="{% static 'bilbyweb/images/code.png' %}"
+                                            alt="Hanford Detector Frequency Domain Data">
+                                        <div class="card-body">
+                                            <p class="card-text">{{ result.path }}</p>
+                                        </div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </ul>
                 {% else %}
                     <h5>Unable to fetch output files. Cluster containing the output of this job is not currently

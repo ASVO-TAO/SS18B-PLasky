@@ -3,6 +3,7 @@ Distributed under the MIT License. See LICENSE.txt for more info.
 """
 
 import logging
+from os.path import basename
 
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
@@ -77,44 +78,57 @@ def view_job(request, job_id):
 
                 # Empty parameter dict to pass to template
                 job_data = {
-                    # 'L1': None,
-                    # 'V1': None,
-                    # 'H1': None,
-                    # 'corner': None,
-                    # 'archive': None,
+                    'images': None,
+                    'results': None,
+                    'archive': None,
                     # for drafts there are no clusters assigned, so bilby_job.job.custer is None for them
                     'is_online': bilby_job.job.cluster is not None and bilby_job.job.cluster.is_connected() is not None
                 }
-                #
-                # # Check if the cluster is online
-                # if job_data['is_online']:
-                #     try:
-                #         # Get the output file list for this job
-                #         result = bilby_job.job.fetch_remote_file_list(path="/", recursive=True)
-                #         # Waste the message id
-                #         result.pop_uint()
-                #         # Iterate over each file
-                #         num_entries = result.pop_uint()
-                #         for _ in range(num_entries):
-                #             path = result.pop_string()
-                #             # Waste the is_file bool
-                #             result.pop_bool()
-                #             # Waste the file size
-                #             size = get_readable_size(result.pop_ulong())
-                #
-                #             # Check if this is a wanted file
-                #             if 'output/L1_frequency_domain_data.png' in path:
-                #                 job_data['L1'] = {'path': path, 'size': size}
-                #             if 'output/V1_frequency_domain_data.png' in path:
-                #                 job_data['V1'] = {'path': path, 'size': size}
-                #             if 'output/H1_frequency_domain_data.png' in path:
-                #                 job_data['H1'] = {'path': path, 'size': size}
-                #             if 'output/bilby_corner.png' in path:
-                #                 job_data['corner'] = {'path': path, 'size': size}
-                #             if 'bilby_job_{}.tar.gz'.format(bilby_job.job.id) in path:
-                #                 job_data['archive'] = {'path': path, 'size': size}
-                #     except:
-                #         job_data['is_online'] = False
+
+                # Check if the cluster is online
+                if job_data['is_online']:
+                    try:
+                        # Get the output file list for this job
+                        result = bilby_job.job.fetch_remote_file_list(path="/", recursive=True)
+                        # Waste the message id
+                        result.pop_uint()
+                        # Iterate over each file
+                        num_entries = result.pop_uint()
+                        for _ in range(num_entries):
+                            path = result.pop_string()
+                            # Waste the is_file bool
+                            result.pop_bool()
+                            # Waste the file size
+                            size = get_readable_size(result.pop_ulong())
+
+                            # Get the filename for this file
+                            filename = basename(path)
+
+                            # Check if the file starts with a . indicating it is a hidden file
+                            if len(filename) and filename[0] == '.':
+                                continue
+
+                            # Check if this is an image file
+                            if path.startswith('/output/images/'):
+                                # This is an image file
+                                job_data['images'] = \
+                                    job_data['images'] + [{'path': path, 'size': size}] \
+                                    if job_data['images'] else \
+                                    [{'path': path, 'size': size}]
+
+                            # Check if this in an results file
+                            if path.startswith('/output/output/'):
+                                # This is an results file
+                                job_data['results'] = \
+                                    job_data['results'] + [{'path': path, 'size': size}] \
+                                    if job_data['results'] else \
+                                    [{'path': path, 'size': size}]
+
+                            # Check if this file is an archive
+                            if 'bilby_job_{}.tar.gz'.format(bilby_job.job.id) in path:
+                                job_data['archive'] = {'path': path, 'size': size}
+                    except:
+                        job_data['is_online'] = False
 
                 return render(
                     request,

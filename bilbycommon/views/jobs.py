@@ -315,7 +315,7 @@ def download_asset(request, job_id, download, file_path):
 
     # Check that this user has access to this job
     # it can download assets if there is a copy access
-    bilby_job = job.bilby_job
+    bilby_job = job.get_actual_job().bilby_job
     bilby_job.list_actions(request.user)
 
     if 'copy' not in bilby_job.job_actions:
